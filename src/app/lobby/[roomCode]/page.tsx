@@ -29,7 +29,6 @@ export default function LobbyPage({ params }: Props) {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
 
-  // Auto-join si on arrive sur ce code sans être dans la room
   useEffect(() => {
     if (!room || !player) return;
     const isInRoom = room.players.some((p) => p.id === player.id);
@@ -40,14 +39,12 @@ export default function LobbyPage({ params }: Props) {
     }
   }, [room, player, roomCode]);
 
-  // Redirect vers le game screen dès que la partie démarre
   useEffect(() => {
     if (room?.status === 'playing') {
       router.replace(`/game/${room.id}`);
     }
   }, [room, router]);
 
-  // Redirect vers /auth si non auth
   useEffect(() => {
     if (authStatus === 'unauthenticated') {
       router.replace('/auth');
@@ -70,7 +67,7 @@ export default function LobbyPage({ params }: Props) {
   if (loading || authStatus === 'loading') {
     return (
       <main className="flex min-h-dvh items-center justify-center">
-        <div className="size-12 animate-spin rounded-full border-4 border-white/20 border-t-[var(--color-primary)]" />
+        <div className="size-14 animate-spin rounded-full border-4 border-white/10 border-t-[var(--color-primary)]" />
       </main>
     );
   }
@@ -121,11 +118,12 @@ export default function LobbyPage({ params }: Props) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-lg flex flex-col items-center gap-8"
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-lg flex flex-col items-center gap-10"
       >
         <RoomCodeDisplay roomCode={room.roomCode} />
 
-        <div className="w-full rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6">
+        <div className="glass-card-strong w-full rounded-3xl p-6">
           <PlayerList
             players={room.players}
             hostId={room.hostId}
@@ -134,7 +132,9 @@ export default function LobbyPage({ params }: Props) {
         </div>
 
         {actionError && (
-          <p className="text-red-400 text-sm text-center">{actionError}</p>
+          <p className="text-red-400 text-xs tracking-wider text-center uppercase">
+            {actionError}
+          </p>
         )}
 
         <div className="w-full flex flex-col gap-3">
@@ -143,7 +143,7 @@ export default function LobbyPage({ params }: Props) {
             variant={currentPlayerInRoom?.isReady ? 'secondary' : 'primary'}
             onClick={handleToggleReady}
           >
-            {currentPlayerInRoom?.isReady ? 'PAS PRÊT' : 'JE SUIS PRÊT'}
+            {currentPlayerInRoom?.isReady ? 'Pas prêt' : 'Je suis prêt'}
           </Button>
 
           {isHost && (
@@ -153,7 +153,7 @@ export default function LobbyPage({ params }: Props) {
               disabled={!canStart}
               loading={actionLoading}
             >
-              {canStart ? 'DÉMARRER LA PARTIE' : 'EN ATTENTE DES JOUEURS'}
+              {canStart ? 'Démarrer la partie' : 'En attente des joueurs'}
             </Button>
           )}
 

@@ -31,7 +31,7 @@ export default function HomePage() {
   if (status !== 'authenticated' || !player) {
     return (
       <main className="flex min-h-dvh items-center justify-center">
-        <div className="size-12 animate-spin rounded-full border-4 border-white/20 border-t-[var(--color-primary)]" />
+        <div className="size-14 animate-spin rounded-full border-4 border-white/10 border-t-[var(--color-primary)]" />
       </main>
     );
   }
@@ -39,28 +39,39 @@ export default function HomePage() {
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center p-6">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md flex flex-col items-center gap-10"
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-md flex flex-col items-center gap-12"
       >
-        <div className="flex flex-col items-center gap-2">
+        <div className="flex flex-col items-center gap-4">
           <motion.div
             animate={{
               boxShadow: [
-                '0 0 30px 10px rgba(255,215,0,0.3)',
-                '0 0 60px 20px rgba(255,215,0,0.5)',
-                '0 0 30px 10px rgba(255,215,0,0.3)',
+                '0 0 40px 10px rgba(255,215,0,0.3)',
+                '0 0 80px 20px rgba(255,215,0,0.5)',
+                '0 0 40px 10px rgba(255,215,0,0.3)',
               ],
             }}
-            transition={{ duration: 2, repeat: Infinity }}
-            className="size-24 rounded-full bg-[var(--color-primary)] flex items-center justify-center border-4 border-white mb-2"
+            transition={{ duration: 2.5, repeat: Infinity }}
+            className="size-28 rounded-full flex items-center justify-center border-[3px] border-white/80"
+            style={{
+              background: 'radial-gradient(circle at 30% 30%, #ffe666, #c9a700)',
+            }}
           >
-            <span className="text-3xl font-black text-black">T²</span>
+            <span
+              className="text-4xl font-black text-black"
+              style={{ textShadow: '0 2px 4px rgba(0,0,0,0.3)' }}
+            >
+              T²
+            </span>
           </motion.div>
-          <h1 className="text-4xl font-black tracking-[0.3em] text-white">TTMC</h1>
-          <p className="text-sm text-[var(--color-primary)]">
-            Salut, <span className="font-bold">{player.pseudo}</span>
-          </p>
+          <h1 className="text-5xl font-black tracking-[0.35em] text-white text-glow">TTMC</h1>
+          <div className="glass-card rounded-full px-5 py-1.5">
+            <p className="text-xs text-[var(--color-primary)]">
+              Salut, <span className="font-black">{player.pseudo}</span>
+            </p>
+          </div>
         </div>
 
         <div className="w-full flex flex-col gap-4">

@@ -1,20 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0a0a0f;
+  --color-background: #0a0612;
   --color-foreground: #ffffff;
-  --color-surface: #15151f;
-  --color-surface-elevated: #1e1e2a;
+  --color-surface: #15101f;
+  --color-surface-elevated: #1e1729;
+  --color-surface-glass: rgba(255, 255, 255, 0.04);
 
   --color-primary: #ffd700;
   --color-primary-dark: #c9a700;
   --color-secondary: #9c27b0;
 
   --color-ttmc-mature: #4fc3f7;
-  --color-ttmc-improbable: #9c27b0;
+  --color-ttmc-improbable: #c27bdf;
   --color-ttmc-plaisir: #ff9800;
   --color-ttmc-scolaire: #66bb6a;
-  --color-ttmc-intrepide: #e53935;
+  --color-ttmc-intrepide: #ef5350;
   --color-ttmc-final: #ffd700;
 
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
@@ -31,9 +32,10 @@ body {
 body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
-/* Scrollbar discrète dark mode */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -42,17 +44,111 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.2);
 }
 
-/* Radial gradient utilisé sur toutes les pages principales */
+/* Fond TV show : ambiances violettes + or + blobs lumineux */
 .ttmc-bg {
   background:
-    radial-gradient(ellipse at top, rgba(156, 39, 176, 0.25), transparent 60%),
-    radial-gradient(ellipse at bottom, rgba(255, 215, 0, 0.15), transparent 60%),
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(156, 39, 176, 0.4), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(255, 215, 0, 0.15), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 20% 100%, rgba(79, 195, 247, 0.1), transparent 70%),
     var(--color-background);
+  position: relative;
+}
+
+.ttmc-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.02) 0.5px, transparent 1px),
+    radial-gradient(circle at 75% 60%, rgba(255, 255, 255, 0.015) 0.5px, transparent 1px);
+  background-size: 40px 40px, 80px 80px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Utilitaires glassmorphism */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glass-card-strong {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(24px) saturate(200%);
+  -webkit-backdrop-filter: blur(24px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Glow doré pour les éléments primaires */
+.glow-primary {
+  box-shadow:
+    0 0 20px rgba(255, 215, 0, 0.3),
+    0 0 40px rgba(255, 215, 0, 0.15),
+    0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.glow-primary-strong {
+  box-shadow:
+    0 0 30px rgba(255, 215, 0, 0.5),
+    0 0 60px rgba(255, 215, 0, 0.25),
+    0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Text glow */
+.text-glow {
+  text-shadow:
+    0 0 20px rgba(255, 215, 0, 0.4),
+    0 0 40px rgba(255, 215, 0, 0.2);
+}
+
+/* Animation gradient shimmer pour les boutons primaires */
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.15) 50%,
+    transparent 70%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Pulse halo autour des éléments actifs */
+@keyframes pulse-halo {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 12px rgba(255, 215, 0, 0);
+  }
+}
+
+.pulse-halo {
+  animation: pulse-halo 2s ease-out infinite;
+}
+
+/* Disposition sticky pour les contenus principaux au-dessus du fond */
+main {
+  position: relative;
+  z-index: 1;
 }
