@@ -1,0 +1,24 @@
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+import { getSessionPlayerId } from '@/lib/auth/session';
+import { submitAnswer, GameError } from '@/lib/api/game-service';
+
+const Body = z.object({ isCorrect: z.boolean() });
+
+export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
+  const playerId = await getSessionPlayerId();
+  if (!playerId) return NextResponse.json({ error: 'Non authentifié' }, { status: 401 });
+  const body = await request.json().catch(() => null);
+  const parsed = Body.safeParse(body);
+  if (!parsed.success) return NextResponse.json({ error: 'Body invalide' }, { status: 400 });
+  const { id } = await context.params;
+  try {
+    await submitAnswer(id, playerId, parsed.data.isCorrect);
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    if (err instanceof GameError) {
+      return NextResponse.json({ error: err.message }, { status: err.status });
+    }
+    throw err;
+  }
+}

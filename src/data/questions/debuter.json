@@ -1,0 +1,86 @@
+{
+    "jeu": "TIME²",
+    "type_cartes": "HÉSITÉ PAS À DÉBUTER",
+    "cartes": [
+      {
+        "numero": "6898",
+        "texte_principal": "L'équipe qui a le joueur avec le plus de lettres en commun entre son prénom et son signe astrologique démarre la partie.",
+        "texte_secondaire": "En cas d'égalité, l'équipe qui a le plus de joueurs avec le même signe astrologique démarre."
+      },
+      {
+        "numero": "31752",
+        "texte_principal": "L'équipe avec le joueur ayant fait du roller le plus récemment débute la partie.",
+        "texte_secondaire": "Si tu n'es pas capable d'être précis, ce sera la course à pied !"
+      },
+      {
+        "numero": "19875",
+        "texte_principal": "Désigne un capitaine par équipe. Prends les 2 derniers chiffres de l'année de naissance de ta mère, ajoute ton âge. Divise par 2 (arrondis au-dessus) et ajoute le numéro de ta rue (0 si non précisé). Le résultat le plus proche de 47 commence la partie.",
+        "texte_secondaire": "En cas d'égalité, débrouillez-vous !"
+      },
+      {
+        "numero": "51986",
+        "texte_principal": "L'équipe du joueur ou de la joueuse qui imite le mieux le goéland commence la partie.",
+        "texte_secondaire": "Sinon, c'est l'équipe du joueur qui imite le mieux l'autruche."
+      },
+      {
+        "numero": "69100",
+        "texte_principal": "J'espère que vous êtes tous bien installés. Le joueur qui lira la carte n'est pas concerné. Si vous êtes sur une partie à un contre un, retourne vite la carte et fais un autre Hésite pas à débuter ! Le premier qui se lève démarre la partie.",
+        "texte_secondaire": "Si vous êtes tous debout, c'est le joueur se couchant le plus vite au sol qui démarre."
+      },
+      {
+        "numero": "4514",
+        "texte_principal": "L'équipe du joueur ou de la joueuse portant le plus de maquillage commence la partie.",
+        "texte_secondaire": "Si personne ne porte de maquillage, c'est l'équipe du joueur étant allé au Starbucks le plus récemment qui commence la partie."
+      },
+      {
+        "numero": "2345",
+        "texte_principal": "L'équipe qui porte le plus de vert commence.",
+        "texte_secondaire": "Si aucune équipe ne porte de vert, cherchez la couleur rose. Sinon, pourpre, sinon fuchsia, sinon gris anthracite."
+      },
+      {
+        "numero": "533",
+        "texte_principal": "Celui ou celle qui a l'âge le plus proche de Louis de Funès dans La soupe aux choux commence la partie. Pour info, il avait 67 ans.",
+        "texte_secondaire": "En cas d'égalité d'âge, celui qui commence..."
+      },
+      {
+        "numero": "5212",
+        "texte_principal": "L'équipe avec le joueur ayant ingurgité un café à travers son système buccal le plus récemment jouera en premier.",
+        "texte_secondaire": "Si vous avez tous bu vos cafés en même temps, remettez-vous en question et on fera le même petit jeu mais avec du thé cette fois-ci."
+      },
+      {
+        "numero": "6410",
+        "texte_principal": "L'équipe avec le joueur portant le pantalon (ou short/jupe) le plus moche peut démarrer la partie.",
+        "texte_secondaire": "Si vous êtes tous nus, rhabillez-vous très vite."
+      },
+      {
+        "numero": "16000",
+        "texte_principal": "Désigne une personne de chaque équipe. La personne imitant le mieux la fourchette débute la partie.",
+        "texte_secondaire": "cirrrrriiiiii"
+      },
+      {
+        "numero": "33806",
+        "texte_principal": "Désignez une personne qui va fermer les yeux. Celle-ci va tourner rapidement 7 fois sur elle-même. Les autres joueurs restent immobiles et à leur place. La personne aux yeux fermés va pointer un doigt devant elle.",
+        "texte_secondaire": "C'est l'équipe de la personne désignée par ce doigt ou la plus proche qui commence la partie."
+      },
+      {
+        "numero": "50984",
+        "texte_principal": "L'équipe possédant le plus de joueurs ayant travaillé au moins 1 jour dans la restauration commencera la partie.",
+        "texte_secondaire": "En cas d'égalité, c'est l'équipe avec le plus de boutons sur ses vêtements qui débutera."
+      },
+      {
+        "numero": "161021",
+        "texte_principal": "L'équipe possédant le plus de lettres cumulées dans les premiers et deuxièmes prénoms de ses membres devra débuter la partie.",
+        "texte_secondaire": "En cas d'égalité, c'est l'équipe avec le plus de cash dans son portefeuille qui commencera."
+      },
+      {
+        "numero": "20116",
+        "texte_principal": "Tous les joueurs prennent une carte Intrépide. Le but va être de faire tenir le plus longtemps la carte en utilisant exclusivement le petit doigt. Vous devez rester immobiles mais pouvez souffler sur vos adversaires.",
+        "texte_secondaire": "Tout le monde est prêt ? 3, 2, 1, c'est parti pour l'équilibre sur un doigt !"
+      },
+      {
+        "numero": "25238",
+        "texte_principal": "Le joueur lisant cette carte tire au hasard une carte Mature et tente de répondre à la question 5. S'il répond correctement, son équipe commencera la partie (sur la première case du plateau).",
+        "texte_secondaire": "S'il répond mal, il choisira l'équipe qui commence (mais pas la sienne)."
+      }
+    ]
+  }

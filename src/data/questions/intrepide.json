@@ -1,0 +1,289 @@
+[
+  {
+    "id": 70,
+    "type": "Nib",
+    "titre": "NIB",
+    "instruction": "Choix du thème libre.\n\nRéponds à la question 1/10.",
+    "reponse": "Si tu n'y arrives pas, tu perds la partie.\n\nSinon, tu avances normalement."
+  },
+  {
+    "id": 71,
+    "type": "Filmographie 1",
+    "titre": "FILMOGRAPHIE 1",
+    "instruction": "Retrouve, en moins de 10 secondes, chacune de ces actrices grâce à une description inspirée des titres de leur filmographie.\n\nTu avanceras d'une case par bonne réponse.",
+    "questions": [
+      {
+        "lettre": "A",
+        "description": "Elle passe un fabuleux dimanche à l'auberge Vénus, avec Chanel"
+      },
+      {
+        "lettre": "B",
+        "description": "La maudite ex-femme de ma vie bronze sur le gazon"
+      },
+      {
+        "lettre": "C",
+        "description": "Une jolie femme, seule contre tous, a un coup de foudre pour le capitaine Crochet"
+      },
+      {
+        "lettre": "D",
+        "description": "Elle a pris le dernier métro à Cherbourg, avec 8 potiches à la peau d'âne"
+      },
+      {
+        "lettre": "E",
+        "description": "Comme le Sheitan qui brille dans le grand bain avant l'hiver, ou rien"
+      }
+    ],
+    "reponses": [
+      {
+        "lettre": "A",
+        "reponse": "Audrey Tautou"
+      },
+      {
+        "lettre": "B",
+        "reponse": "Josiane Balasko"
+      },
+      {
+        "lettre": "C",
+        "reponse": "Julia Roberts"
+      },
+      {
+        "lettre": "D",
+        "reponse": "Catherine Deneuve"
+      },
+      {
+        "lettre": "E",
+        "reponse": "Leïla Bekhti"
+      }
+    ]
+  },
+  {
+    "id": 72,
+    "type": "Ambition",
+    "titre": "AMBITION",
+    "instruction": "Thème Mature ou Improbable imposé.\n\nTu dois choisir une question supérieure à 3/10.\n\nDétails au verso.",
+    "reponse": "Si tu ne réponds pas correctement à la question choisie, tu recules du nombre de cases correspondant au niveau de la question.\n\nPar exemple, si tu réponds faux à la question 5, et bien tu recules de 5 cases !\n\nEn cas de bonne réponse, schéma classique de jeu."
+  },
+  {
+    "id": 73,
+    "type": "Bienvenue sur votre messagerie",
+    "titre": "BIENVENUE SUR VOTRE MESSAGERIE",
+    "instruction": "Lorsque tu consultes ta messagerie Free Mobile, plusieurs possibilités s'offrent à toi dans le menu principal. Dis-nous si les propositions suivantes existent vraiment, en répondant rapidement par oui ou non.\n\nTu avanceras d'une case par bonne réponse mais reculeras d'une case par mauvaise réponse.",
+    "questions": [
+      {
+        "lettre": "A",
+        "proposition": "\"Pour consulter vos messages, faites le 1\""
+      },
+      {
+        "lettre": "B",
+        "proposition": "\"Pour personnaliser votre annonce d'accueil, faites le 2\""
+      },
+      {
+        "lettre": "C",
+        "proposition": "\"Pour se délecter de nos conditions générales de vente, faites le 3\""
+      },
+      {
+        "lettre": "D",
+        "proposition": "\"Pour rappeler votre correspondant, faites le 4\""
+      },
+      {
+        "lettre": "E",
+        "proposition": "\"Pour plus d'informations sur nos offres commerciales, faites le 5\""
+      },
+      {
+        "lettre": "F",
+        "proposition": "\"Pour modifier ou récupérer votre code secret, faites le 7\""
+      },
+      {
+        "lettre": "G",
+        "proposition": "\"Pour gérer votre messagerie, faites le 8\""
+      },
+      {
+        "lettre": "H",
+        "proposition": "\"Pour que tu m'aimes encore, faites le 9\""
+      }
+    ],
+    "reponses": [
+      {
+        "lettre": "A",
+        "reponse": "Oui"
+      },
+      {
+        "lettre": "B",
+        "reponse": "Oui"
+      },
+      {
+        "lettre": "C",
+        "reponse": "Non"
+      },
+      {
+        "lettre": "D",
+        "reponse": "Non"
+      },
+      {
+        "lettre": "E",
+        "reponse": "Non"
+      },
+      {
+        "lettre": "F",
+        "reponse": "Non"
+      },
+      {
+        "lettre": "G",
+        "reponse": "Oui"
+      },
+      {
+        "lettre": "H",
+        "reponse": "Non"
+      }
+    ]
+  },
+  {
+    "id": 74,
+    "type": "De 1 à 10",
+    "titre": "DE 1 À 10",
+    "instruction": "Réponds à l'ensemble des questions suivantes par un chiffre de 1 à 10.\n\nTu avanceras d'une case par bonne réponse.\nTu as 13 secondes maximum par question.",
+    "questions": [
+      {
+        "lettre": "A",
+        "question": "Le nombre de merveille(s) du monde"
+      },
+      {
+        "lettre": "B",
+        "question": "Le nombre d'année(s) scolaire(s) redoublée(s) par la personne lisant cette carte"
+      },
+      {
+        "lettre": "C",
+        "question": "L'âge de Drew Barrymore lors de la sortie de E.T. en 1982"
+      },
+      {
+        "lettre": "D",
+        "question": "Le chiffre allemand acht, en français"
+      },
+      {
+        "lettre": "E",
+        "question": "Le nombre de César obtenu par Patrick Bruel en tant qu'acteur à l'aube du 17 février 2024"
+      },
+      {
+        "lettre": "F",
+        "question": "Le nombre de milliers de kilomètres séparant Angoulême de New York"
+      }
+    ],
+    "reponses": [
+      {
+        "lettre": "A",
+        "reponse": "7"
+      },
+      {
+        "lettre": "B",
+        "reponse": "À toi de nous dire !"
+      },
+      {
+        "lettre": "C",
+        "reponse": "7"
+      },
+      {
+        "lettre": "D",
+        "reponse": "8"
+      },
+      {
+        "lettre": "E",
+        "reponse": "1 (en 2013, pour Le Prénom)"
+      },
+      {
+        "lettre": "F",
+        "reponse": "6 (5.800 environ)"
+      }
+    ]
+  },
+  {
+    "id": 75,
+    "type": "It's-a me, Mario",
+    "titre": "IT'S-A ME, MARIO",
+    "instruction": "Cite le plus d'objets différents que tu peux récolter dans les boîtes à objets du jeu Mario Kart 64.\n\nLes boîtes à objets sont les cases avec un point d'interrogation qui te permettent d'obtenir des bonus.\n\nTu as 26 secondes maximum pour répondre.\n\nTu avanceras d'une case par bonne réponse.",
+    "reponses": [
+      "Banane (1 ou 5)",
+      "Champignon (1 ou 3)",
+      "Super champignon (ou champignon doré)",
+      "Carapace verte (1 ou 3)",
+      "Carapace rouge (1 ou 3)",
+      "Carapace bleue (ou à épines)",
+      "Fausse boîte à objets (ou fausse boîte bonus)",
+      "Éclair",
+      "Super étoile",
+      "Fantôme (ou Boo)"
+    ]
+  },
+  {
+    "id": 76,
+    "type": "Averell",
+    "titre": "AVERELL",
+    "instruction": "Repère rapidement les 2 plus grands joueurs par la taille.\n\nCes 2 joueurs devront échanger d'équipe.\n\nSi les 2 grands sont dans la même équipe, l'équipe devra se séparer pour créer 2 équipes distinctes.\n\nLe plus grand recule d'une case et finira la partie seul (avec un nouveau pion).\n\nLe 2e plus grand avance d'une case et garde ses coéquipiers (ou termine seul si l'équipe était formée des 2 grands dadais).",
+    "reponse": "Dans les 2 cas, ce sera à l'équipe la moins bien placée sur le plateau de reprendre la partie de façon constructive !\n\nLe sens des aiguilles d'une horloge sera toujours en vigueur pour définir l'ordre de jeu des nouvelles équipes."
+  },
+  {
+    "id": 77,
+    "type": "Under Pressure",
+    "titre": "UNDER PRESSURE",
+    "instruction": "À 2 ans près, donne-nous l'année de sortie des chansons suivantes, dont le sujet est plutôt sulfureux.\n\nRéponds à toutes les questions, tu as 10 secondes maximum par question et avanceras d'une case par bonne réponse.",
+    "questions": [
+      {
+        "lettre": "A",
+        "chanson": "La ceinture d'Élodie Frégé"
+      },
+      {
+        "lettre": "B",
+        "chanson": "Birthday sex de Jeremih"
+      },
+      {
+        "lettre": "C",
+        "chanson": "Déshabillez-moi de Juliette Gréco"
+      },
+      {
+        "lettre": "D",
+        "chanson": "Bitch de Meredith Brooks"
+      },
+      {
+        "lettre": "E",
+        "chanson": "Lady Marmalade de Christina Aguilera, Mya, Pink et Lil' Kim"
+      },
+      {
+        "lettre": "F",
+        "chanson": "Ma petite entreprise d'Alain Bashung"
+      },
+      {
+        "lettre": "G",
+        "chanson": "Light my fire des Doors"
+      }
+    ],
+    "reponses": [
+      {
+        "lettre": "A",
+        "reponse": "2006 (propositions entre 2004 et 2008 acceptées)"
+      },
+      {
+        "lettre": "B",
+        "reponse": "2009 (propositions entre 2007 et 2011 acceptées)"
+      },
+      {
+        "lettre": "C",
+        "reponse": "1967 (propositions entre 1965 et 1969 acceptées)"
+      },
+      {
+        "lettre": "D",
+        "reponse": "1997 (propositions entre 1995 et 1999 acceptées)"
+      },
+      {
+        "lettre": "E",
+        "reponse": "2001 (propositions entre 1999 et 2003 acceptées)"
+      },
+      {
+        "lettre": "F",
+        "reponse": "1994 (propositions entre 1992 et 1996 acceptées)"
+      },
+      {
+        "lettre": "G",
+        "reponse": "1967 (propositions entre 1965 et 1969 acceptées)"
+      }
+    ]
+  }
+]

@@ -1,0 +1,902 @@
+{
+    "jeu": "TIME'S UP - HÉSITE PAS À GAGNER",
+    "cartes": [
+      {
+        "id": 1,
+        "categorie": "ÇA PART EN LIVE",
+        "question": "Peux-tu m'épeler cette douce expression ?",
+        "expression": "\"Tout part à vau-l'eau\"",
+        "reponse": "Tout part à vau-l'eau",
+        "explication": "Je tiens beaucoup au tiret"
+      },
+      {
+        "id": 2,
+        "categorie": "BOOM",
+        "question": "L'autre jour, j'ai lu un bon bouquin sur les volcans.\n\nSinon, lors de l'éruption volcanique du Vésuve, en l'an 79, quelle était la vitesse maximale de sortie du magma, selon l'article universitaire Dynamics of volcanism :",
+        "options": [
+          "A. Environ 1 km/h ?",
+          "B. Environ 15 km/h ?",
+          "C. Environ 100 km/h ?",
+          "D. Environ 1.500 km/h ?",
+          "E. Environ 15.000 km/h ?"
+        ],
+        "reponse": "D"
+      },
+      {
+        "id": 3,
+        "categorie": "BA-RRA-CU-DA",
+        "question": "Trouve les 2 affirmations erronées concernant Mister T., l'acteur de la série L'Agence tous risques.",
+        "options": [
+          "A. Il a été garde du corps de Michael Jackson",
+          "B. Au cinéma, il a gagné son premier combat contre Rocky Balboa",
+          "C. Il a remporté la 24e édition de Danse avec les stars aux États-Unis",
+          "D. Sa coupe de cheveux forme un joli T",
+          "E. Il apparaît dans une pub de Snickers, en 2008, ayant pour slogan \"Get some nuts\""
+        ],
+        "reponses": ["C", "D"],
+        "explication": "Il a été éliminé lors de la 4e semaine du jeu et arbore plutôt une crête iroquoise"
+      },
+      {
+        "id": 4,
+        "categorie": "LE TEMPS BÉNI DU TANDOORI",
+        "question": "Laquelle de ces affirmations portant sur l'Inde est fausse ?",
+        "options": [
+          "A. Le Taj Mahal est plus haut que le Colisée de Rome",
+          "B. L'Inde et la Chine partagent une frontière commune",
+          "C. La compagnie ferroviaire Indian Railways est le plus grand employeur du monde",
+          "D. C'est le premier pays producteur mondial de lait (plus de 150 millions de tonnes par an)"
+        ],
+        "reponse": "C",
+        "explication": "1,4 million d'employés, soit moins que le département de la défense US, l'armée chinoise, Walmart, McDonald's ou NHS"
+      },
+      {
+        "id": 5,
+        "categorie": "DES CHOSES SIMPLES",
+        "question": "Cite les 3 célébrités de cette liste qui ne sont pas nées à Paris ou en région parisienne :",
+        "liste": "Lily-Rose Depp, Eva Green, Arielle Dombasle, Emma Watson, Jodie Foster, Adèle Exarchopoulos et Jessica Alba.",
+        "reponse": "Arielle Dombasle, Jodie Foster et Jessica Alba (toutes nées aux USA)"
+      },
+      {
+        "id": 6,
+        "categorie": "C'EST FAIT POUR CHÉFFER",
+        "question": "Laquelle de ces anecdotes sur les présidents français n'est pas vraie ?",
+        "options": [
+          "A. Ivre, René Coty a provoqué un petit incendie dans une des salles de l'Élysée",
+          "B. En 1920, Paul Deschanel, somnambule, est tombé d'un train en marche en pyjama",
+          "C. Georges Pompidou a été directeur général de la banque Rothschild",
+          "D. Valéry Giscard d'Estaing kiffait grave chasser le lion au Mozambique",
+          "E. Adolphe Thiers a épousé Élise Dosne, tout en fricotant ardemment avec sa belle-mère"
+        ],
+        "reponse": "A"
+      },
+      {
+        "id": 7,
+        "categorie": "HIJO DE LA LUNA",
+        "question": "Comment s'appelle le fils d'Elon Musk, né en avril 2020 ?",
+        "options": [
+          "A. Ether",
+          "B. C-3PO",
+          "C. X Æ A-12",
+          "D. Elon",
+          "E. Jean-Pierre"
+        ],
+        "reponse": "C"
+      },
+      {
+        "id": 8,
+        "categorie": "INCURVE-TOI",
+        "question": "Tu connais la force centrifuge ? C'est bien.\n\nMais peux-tu m'indiquer son contraire ?",
+        "reponse": "La force centripète"
+      },
+      {
+        "id": 9,
+        "categorie": "PALAPAPA",
+        "question": "\"Bonjour\" se dit \"mwaramutse\" en rwandais.\n\nMais quelle est la traduction littérale de ce terme ?",
+        "options": [
+          "A. As-tu vu le soleil se lever ?",
+          "B. Qu'est-ce tu shabes ?",
+          "C. Alors on vit chaque jour comme le dernier.",
+          "D. As-tu survécu à la nuit ?",
+          "E. Où sont tes cernes ?"
+        ],
+        "reponse": "D"
+      },
+      {
+        "id": 10,
+        "categorie": "LE BANDEAU FLUO",
+        "question": "Selon les propres dires de Pascal Légitimus concernant son arrière-grand-père, lequel de ces faits est vrai ?",
+        "options": [
+          "A. Il fut le premier député noir élu au monde",
+          "B. Il fut le premier gérant noir d'une exploitation de bananes en Guadeloupe",
+          "C. Il fut le premier Français noir à se marier avec une Française toute blanche",
+          "D. Il détient toujours le record du monde de lancer du javelot",
+          "E. Aucune des 4, Pascal n'est qu'un sombre mytho"
+        ],
+        "reponse": "A"
+      },
+      {
+        "id": 11,
+        "categorie": "MODE INCOGNITO",
+        "question": "Classe ces catégories de vidéos pornos de la plus recherchée à la moins recherchée par les hommes sur le site Pornhub en 2016, selon Pornhub !\n\nLes 4 propositions ci-dessous sont les 4 catégories les plus recherchées. On espère que tu apprécieras nos traductions douteuses !",
+        "options": [
+          "A. Belle-mère",
+          "B. Demi-sœur",
+          "C. Japonaise",
+          "D. Maman avec qui j'aimerais faire des activités extrascolaires"
+        ],
+        "reponse": "D, B, A, C"
+      },
+      {
+        "id": 12,
+        "categorie": "NON MAIS DITES DONC",
+        "question": "Peux-tu me donner le nom du réalisateur de La Grande vadrouille, Les Aventures de Rabbi Jacob, Le Corniaud ou encore L'As des as ?",
+        "reponse": "Gérard Oury"
+      },
+      {
+        "id": 13,
+        "categorie": "TOP OF THE POP",
+        "question": "Lequel des lieux suivants est le plus haut sommet d'Espagne ?",
+        "options": [
+          "A. La bosse dans l'entrejambe de Pablo, sur les ramblas de Barcelone",
+          "B. Le mont Teide, le volcan de Tenerife",
+          "C. Le pic d'Aneto, dans les Pyrénées",
+          "D. Le pic Mulhacén, en Andalousie",
+          "E. Le mont Perdu, proche de la frontière franco-espagnole"
+        ],
+        "reponse": "B",
+        "details": "3.718 mètres. Puis D (3.479 m), C (3.404 m), E (3.355 m) et A (11,7 cm)"
+      },
+      {
+        "id": 14,
+        "categorie": "LE MAGICIEN D'OZ",
+        "question": "J'aime bien le café Malongo, et toi ?\n\nEn revanche, à côté de la quantité en grammes, il est écrit 8,8 oz sur la boîte.\n\nQuelle est la signification du symbole oz ?",
+        "reponse": "L'once",
+        "explication": "La réponse \"Unité de mesure\" ne nous suffit pas !"
+      },
+      {
+        "id": 15,
+        "categorie": "IEOH MING PEI",
+        "question": "La culture te permet d'atteindre une plénitude psychique, cette question est pour toi.\n\nEn quelle année a été inauguré le musée du Louvre de Paris :",
+        "options": [
+          "A. Le 10 août 1793 ?",
+          "B. Le 10 août 1853 ?",
+          "C. Le 10 août 1893 ?",
+          "D. Le 10 août 1953 ?"
+        ],
+        "reponse": "A"
+      },
+      {
+        "id": 16,
+        "categorie": "DICODOCUS",
+        "question": "Cite 2 des noms communs que tu trouves par ordre alphabétique entre \"tapissier\" et \"tarabiscoter\".",
+        "consignes": "On se base bien évidemment sur Le Robert Plus datant de 2007 et on ne compte pas les déclinaisons de genre, les pluriels ou les conjugaisons éventuelles.",
+        "temps": "Tu as 1 minute pour répondre.",
+        "reponse": "Tapoter, tapuscrit, taquet, taquin(e), taquiner, taquinerie"
+      },
+      {
+        "id": 17,
+        "categorie": "MICROPARTICULE",
+        "question": "Lorsque Éric Tabarly disait à son pote navigateur Olivier de Kersauson\n\n\"Fais gaffe à l'OFNI frère\",\n\nqu'entendait-il par \"OFNI\" ?",
+        "reponse": "Objet flottant non identifié"
+      },
+      {
+        "id": 18,
+        "categorie": "BÊLER COMPLET",
+        "question": "Tu te souviens de l'année 2014 ?\n\nSi oui, retrouve 3 des 10 pays possédant le plus de moutons en cette belle année.",
+        "limite": "8 propositions maximum.",
+        "reponse": "Chine, Australie, Inde, Iran, Nigeria, Soudan, Royaume-Uni, Turquie, Nouvelle-Zélande et Éthiopie",
+        "details": "202 millions de moutons en Chine !"
+      },
+      {
+        "id": 19,
+        "categorie": "HUMMM CHARAL",
+        "question": "Classe ces données selon leur valeur pécuniaire en 2021, de la plus élevée à la moins élevée.",
+        "consignes": "On considère que tu n'as pas pris le temps de négocier les tarifs, malgré la quantité.",
+        "options": [
+          "A. 20.000 litres de solution d'entretien pour lentilles souples Acuvue RevitaLens, vendue par flacons de 360 ml chez Optique Leclerc",
+          "B. 30 millions de steaks hachés Charal, de la gamme Happy Family, vendus chez Franprix",
+          "C. 900.000 brosses de lissage à cheveux Ysiance, de la gamme Sanglier, vendues sur le site en ligne de Casino"
+        ],
+        "reponse": "B, C, A",
+        "details": "Charal 39,9 M€, Ysiance 8,99 M€ et Acuvue 5,5 M€"
+      },
+      {
+        "id": 20,
+        "categorie": "STACKO",
+        "question": "Selon les règles du jeu Uno, lesquelles de ces actions ne sont pas autorisées ?",
+        "options": [
+          "A. Piocher 2 cartes si on oublie de dire \"Uno\" alors qu'il ne t'en reste qu'une",
+          "B. Poser une carte 3 rouge sur une autre carte 3 rouge",
+          "C. Poser un +4 après un +4",
+          "D. Poser un +2 après un +4",
+          "E. Agresser verbalement ton cousin de 6 ans parce qu'il a gagné la partie"
+        ],
+        "reponses": ["C", "D"],
+        "explication": "(les règles ne sont pas claires sur les agressions verbales envers les cousins)"
+      },
+      {
+        "id": 21,
+        "categorie": "ROME ANTCHIQUE",
+        "question": "Cite 6 des 7 lettres de l'alphabet utilisées pour symboliser les chiffres romains, le tout en levant les bras vers le ciel.",
+        "consignes": "Tu ne pourras faire que 7 propositions.",
+        "reponse": "I (1), V (5), X (10), L (50), C (100), D (500), M (1000)"
+      },
+      {
+        "id": 22,
+        "categorie": "LE TEMPO EN DÉLIRE",
+        "question": "De quelle chanson sont tirées les somptueuses phrases suivantes ?",
+        "phrases": [
+          "\"Ton cœur est un saphir de pick-up\"",
+          "\"La cadence du funk au plus haut t'emmène\"",
+          "\"Plus tard, la caisse était cassée avant que craquent les chromes\""
+        ],
+        "reponse": "Nuit de folie"
+      },
+      {
+        "id": 23,
+        "categorie": "ERREUR 404",
+        "question": "Quel est le nom du site internet gouvernemental concernant le droit à l'erreur ?",
+        "options": [
+          "A. oups.gouv.fr",
+          "B. rectif.gouv.fr",
+          "C. gaffe.gouv.fr",
+          "D. uluberlu.gouv.fr",
+          "E. boulette.gouv.fr"
+        ],
+        "reponse": "A"
+      },
+      {
+        "id": 24,
+        "categorie": "VDT",
+        "question": "Gonzague conduit un camion roulant à allure constante de 117 km/h. Il transporte 60 kg de mangues importées du Brésil et se trouve à 3 km au-dessus du niveau de la mer.\n\nCombien de mètres parcourra-t-il en 1 minute et 20 secondes sur une route de 6 mètres de large ?",
+        "temps": "Tu as 1 minute chrono pour répondre.",
+        "reponse": "2.600 mètres",
+        "explication": "(rappelle-toi de la formule V = D / T)"
+      },
+      {
+        "id": 25,
+        "categorie": "LGBT+++",
+        "question": "À quoi correspondent les lettres du sigle LGBTTQQIAAP ?",
+        "consignes": "Retrouve au moins 8 des mots pour gagner la partie et ravir la communauté.",
+        "reponse": "Lesbien, Gay, Bisexuel, Transgenre, Transsexuel, Queer, en Questionnement, Intersexe, Asexué, Allié, Pansexuel"
+      },
+      {
+        "id": 26,
+        "categorie": "CHRONO-LOGIQUE",
+        "question": "Quel pays est le plus proche des coordonnées 0° longitude et 0° latitude ?",
+        "explication": "C'est donc le croisement de la ligne de l'équateur et du méridien de Greenwich.",
+        "options": [
+          "A. Malaisie",
+          "B. Équateur",
+          "C. Royaume-Uni",
+          "D. Ghana",
+          "E. Russie"
+        ],
+        "reponse": "D"
+      },
+      {
+        "id": 27,
+        "categorie": "GESTES BARRIÈRES",
+        "question": "Quel pays d'Afrique est le théâtre du roman La Peste de notre bon vieil Albert Camus ?",
+        "reponse": "L'Algérie",
+        "explication": "(à Oran, si tu veux tout savoir)"
+      },
+      {
+        "id": 28,
+        "categorie": "JEAN GABIN",
+        "question": "Les rappeurs de qualité aiment se faire appeler MC (le Français le plus connu étant le dantesque MC Solaar).\n\nQue veut dire MC dans le milieu du Rap Game ?",
+        "options": [
+          "A. Master Cock",
+          "B. Master of Ceremonies",
+          "C. Master of Choral",
+          "D. Master of Clan",
+          "E. Master of Crew"
+        ],
+        "reponse": "B"
+      },
+      {
+        "id": 29,
+        "categorie": "BOMBE!",
+        "question": "Michelle Plouffe est une sportive de haut niveau.\n\nPourrais-tu m'indiquer sa discipline ?",
+        "options": [
+          "A. Le 50 mètres nage libre",
+          "B. Le basketball",
+          "C. Le football américain",
+          "D. Le plongeon de haut vol synchronisé à 10 mètres"
+        ],
+        "reponse": "B"
+      },
+      {
+        "id": 30,
+        "categorie": "MODE INCOGNITA",
+        "question": "Classe ces catégories de recherches pornos de la plus recherchée à la moins recherchée par les femmes sur le site Pornhub en 2016, selon Pornhub !\n\nLes 4 propositions ci-dessous sont les 4 catégories les plus recherchées.",
+        "options": [
+          "A. Ciseaux lesbiens",
+          "B. Gros membre noir",
+          "C. Lesbienne",
+          "D. Plan à trois"
+        ],
+        "reponse": "C, A, D, B"
+      },
+      {
+        "id": 31,
+        "categorie": "WILSON",
+        "question": "T'aimes bien Tom Hanks ? Moi aussi.\n\nCe formidable acteur collectionne l'une des choses suivantes. Laquelle ?",
+        "options": [
+          "A. Les rhinocéros",
+          "B. Les cassettes VHS",
+          "C. Les machines à écrire",
+          "D. Les placentas",
+          "E. Les tickets de cinéma"
+        ],
+        "reponse": "C"
+      },
+      {
+        "id": 32,
+        "categorie": "JÉSUS MARIE JOSEPH",
+        "question": "De quoi s'est fait opérer le pape François en juillet 2021 ?",
+        "options": [
+          "A. Du coude",
+          "B. Du colon",
+          "C. De la prostate",
+          "D. Du testicule gauche",
+          "E. De la vésicule biliaire"
+        ],
+        "reponse": "B"
+      },
+      {
+        "id": 33,
+        "categorie": "LA BOÎTE DE JAZZ",
+        "question": "Qu'est-ce que le dépigeonnage ?",
+        "options": [
+          "A. Une pratique visant à se débarrasser des pigeons",
+          "B. Un équivalent haïtien de la piñata",
+          "C. Une technique efficace pour enlever les soutiens-gorge",
+          "D. Un groupe de fanatiques de Michel Jonasz",
+          "E. Une méthode où l'on désapprend des acquis pour les apprendre de nouveau"
+        ],
+        "reponse": "A"
+      },
+      {
+        "id": 34,
+        "categorie": "À ÉVITER!",
+        "question": "Comment peut-on être son propre oncle ou sa propre tante ?",
+        "details": "Tu as 52 secondes pour réfléchir à tout ça et donner une réponse.\n\nTout ce qui est demi-sœur, grand-oncle ou beau-père n'est pas autorisé.",
+        "reponse": "Si tu te maries avec ta tante ou ton oncle (par alliance, c'est moins pire !)"
+      },
+      {
+        "id": 35,
+        "categorie": "C'EST PAS CE QUE TU CROIS",
+        "question": "Laquelle de ces propositions n'est pas un mytho ?",
+        "options": [
+          "A. Dans les années 70, Spontex vendait des éponges vivantes",
+          "B. Les bâtonnets de surimi Coraya ne comprennent que 4 % de chair de poisson",
+          "C. Des matières fécales ont été détectées dans des tartes au chocolat vendues par Ikea",
+          "D. Les rouges à lèvres Sephora sont élaborés à base de betterave"
+        ],
+        "reponse": "C",
+        "explication": "(C'était en 2013, et ça se mariait très bien avec les amandes, apparemment...)"
+      },
+      {
+        "id": 36,
+        "categorie": "MARS & MURRE",
+        "question": "Début 2021, Will Cribul a battu le record du monde d'empilement de M&Ms.\n\nCombien a-t-il empilé de pastilles de Guimauves Book ?",
+        "options": [
+          "A. 3 car personne n'y avait pensé",
+          "B. 5 car c'est déjà pas mal",
+          "C. Il parce qu'il s'est battu comme un beau diable",
+          "D. 17 car il est fabuleux",
+          "E. 37 car c'est un magicien"
+        ],
+        "reponse": "B"
+      },
+      {
+        "id": 37,
+        "categorie": "MONT LEE",
+        "question": "Basé à Los Angeles, le panneau de Hollywood a été construit en 1923.\n\nSelon toi, quelle est la hauteur de chacune des lettres W ?",
+        "reponse": "13,71 mètres",
+        "tolerance": "(propositions entre 11,71 et 15,71 mètres acceptées)"
+      },
+      {
+        "id": 38,
+        "categorie": "EN GRAMME",
+        "question": "Sais-tu ce qu'est un pentagramme ?",
+        "options": [
+          "A. Ton taux d'alcool après 6 pintas",
+          "B. Un magnifique triple triangle croisé",
+          "C. Un joli-mot obtenu en permutant les lettres d'un autre mot de départ",
+          "D. 50000 grammes, tout simplement",
+          "E. Un doux poème dont la disposition des vers forme un dessin"
+        ],
+        "reponse": "B"
+      },
+      {
+        "id": 39,
+        "categorie": "LA ROULÉE",
+        "question": "Une bouteille d'Oasis pomme-cassis-framboise de 2L contient des tomates cerises dans cette portion cassis. Peux-tu me dire combien de tomates cerises cette portion comporte ?\n\nPour information, cette expérience a été effectuée par un puissant organisme, effectuée par l'État.\n\nUne marge d'erreur sera tolérée.",
+        "reponse": "(propositions entre 88 et 106 acceptées)"
+      },
+      {
+        "id": 40,
+        "categorie": "RÉQUIN-BOULE-DOGUE",
+        "question": "Selon l'association de sauvetage des requins, combien d'attaques dans le monde en 2020 ?",
+        "options": [
+          "A. 129",
+          "B. 386",
+          "C. 1 257",
+          "D. 6018"
+        ],
+        "reponse": "A"
+      },
+      {
+        "id": 41,
+        "categorie": "BIZARRERIES",
+        "question": "Laquelle de ces propositions est incorrecte ?",
+        "options": [
+          "A. L'éperchase désigne le décès d'un orgasme",
+          "B. Les mots moins meurtre, quatorze, humble, mixte et mois ne riment qu'avec eux-mêmes",
+          "C. \"Oiseaux\" est le plus long mot dont on ne prononce aucune lettre",
+          "D. Il existe un livre de 166 pages constitué d'une seule et même phrase"
+        ],
+        "reponse": "B",
+        "explication": "(tous ces mots ne riment qu'avec eux-mêmes à l'exception d'arbore qui rime avec mal-ore)"
+      },
+      {
+        "id": 42,
+        "categorie": "COURTE-PAILLE",
+        "question": "De la plus courte à la plus longue.\n\nRange ces propositions",
+        "options": [
+          "A. La ligne de chemin de fer du Transsibérien",
+          "B. Le plus long pont du monde",
+          "C. La barrière d'Ingos, en Australie",
+          "D. La distance entre la couche d'ozone et Selena Gomez",
+          "E. Le Portugal du nord au sud"
+        ],
+        "reponse": "D < B < E < C < A",
+        "explication": "(30 km la couche d'ozone, 65 km le pont, 9 285 km le Portugal, 9 289 km la barrière et 9 250 km le chemin de fer)"
+      },
+      {
+        "id": 43,
+        "categorie": "SARCASME",
+        "question": "Qu'est-ce que le Gulf Stream ?",
+        "options": [
+          "A. Une marque anglaise de purificateur d'eau",
+          "B. Un tournoi de golf du circuit européen",
+          "C. Un conflit géopolitique",
+          "D. Un boys band des années 90 venu d'Iran",
+          "E. Un concurrent de Netflix à Abu Dhabi",
+          "F. Un célèbre courant océanique chaud"
+        ],
+        "reponse": "F"
+      },
+      {
+        "id": 44,
+        "categorie": "C'EST QUI MONSIEUR",
+        "question": "Quel objet de marque vous est décrit ainsi: \"son design contemporain lui permet de se fondre dans une chambre ultramoderne ou de donner un style à un cadre plutôt sobre\" ?",
+        "options": [
+          "A. Une chaise de bureau",
+          "B. Une lampe LED",
+          "C. Un tapis de sol",
+          "D. Une étagère jaune",
+          "E. Une mini-enceinte sans fil"
+        ],
+        "reponse": "E"
+      },
+      {
+        "id": 45,
+        "categorie": "2E MILLÉNAIRE",
+        "question": "Parmi les 6 personnalités suivantes, une seule ne fait pas partie de la liste des 100 candidats en course pour être élue \"Femme du Millénaire\" de l'an 2000.\n\nLaetitia Casta, Estelle Hallyday\nPatricia Kaas, Daneyt, Limborso\nNathalie Simon, Ophélie Winter\n\nTrouver l'intruse.",
+        "reponse": "Daneyt",
+        "explication": "(pour info, c'est l'Association des maîtres C'est N°1 qui a élu Madame C. Casual)"
+      },
+      {
+        "id": 46,
+        "categorie": "SACRÉE RÉGINE!",
+        "question": "Notre très chère Régine nationale a été discothèque et barmaid dans une boîte.\n\nQuel était le nom de la discothèque ?",
+        "options": [
+          "A. C'est par là coco",
+          "B. Dernière les fagots",
+          "C. Fais pas le chaud",
+          "D. Les verres de trop",
+          "E. Whisky à gogo"
+        ],
+        "reponse": "E"
+      },
+      {
+        "id": 47,
+        "categorie": "PALAAAA",
+        "question": "Toi et tes semblables aimez vous pavaner dans un SUV.\n\nMais que signifie SUV ?\n\nIndice : la U est super utile.",
+        "reponse": "Sport Utility Vehicle"
+      },
+      {
+        "id": 48,
+        "categorie": "ET THÉRAPIE",
+        "question": "Aurais-tu l'obligeance de me dire ce qu'est la locanothérapie ?",
+        "options": [
+          "A. La joie de faire constamment",
+          "B. La nostalgie des vagues de la mer d'Indochine vers l'Europe",
+          "C. Le fait de devoir contempler des boas constricteurs tous les jours",
+          "D. L'art de se comporter comme un bovin"
+        ],
+        "reponse": "D"
+      },
+      {
+        "id": 49,
+        "categorie": "DIMANCHE SOIR",
+        "question": "Le 15 novembre 2020, j'ai calculé la durée de la pub entre les émissions de la Capitale et Enquête exclusive.\n\nTu dirais combien ?",
+        "reponse": "9 minutes et 23 secondes",
+        "tolerance": "(propositions entre 8 et 11 minutes acceptées)"
+      },
+      {
+        "id": 50,
+        "categorie": "LE MONOPOLE DU CŒUR",
+        "question": "Toi qui suis la politique à la lettre, pourrais-tu me dire quel a été le premier débat présidentiel télévisé ?",
+        "options": [
+          "A. Pépin le Bref et Charles Martel en 741",
+          "B. Richard Nixon et John Kennedy en 1960",
+          "C. Georges Pompidou et Alain Poher en 1969",
+          "D. Valéry Giscard d'Estaing et François Mitterrand en 1974",
+          "E. Bill Clinton et George Bush en 1992"
+        ],
+        "reponse": "B"
+      },
+      {
+        "id": 51,
+        "categorie": "CARLE IN THE WIND",
+        "question": "Peux-tu me donner le nom de famille de naissance de Lady Diana ?",
+        "reponse": "Spencer"
+      },
+      {
+        "id": 52,
+        "categorie": "COQ AU VIN",
+        "question": "Parmi les propositions ci-dessous, laquelle n'est pas un fruit à coque ?",
+        "options": [
+          "A. La noix de pécan",
+          "B. L'amande",
+          "C. La cacahuète",
+          "D. La noisette",
+          "E. La pistache"
+        ],
+        "reponse": "C"
+      },
+      {
+        "id": 53,
+        "categorie": "SCHIZOPHRÉNIE",
+        "question": "Au cinéma, j'ai joué des rôles comme le commandant Cousteau, l'abbé Pierre ou encore un illustre extraterrestre dans Le Gendarme et les Extra-terrestres.\n\nQui suis-je ?",
+        "reponse": "Lambert Wilson"
+      },
+      {
+        "id": 54,
+        "categorie": "JOE",
+        "question": "Durant la Première Guerre mondiale, de nombreux taxis ont été réquisitionnés pour transporter les soldats au front.\n\nComment a-t-on appelé ces fameux taxis ?",
+        "reponse": "Les taxis de la Marne"
+      },
+      {
+        "id": 55,
+        "categorie": "TCHI TCHA",
+        "question": "Datant de 1966 et non battu depuis, quel est le record du plus long baiser du monde établi par William Hautman et Mary Win Flitman ?",
+        "options": [
+          "A. 3 secondes",
+          "B. 23 secondes",
+          "C. 43 secondes",
+          "D. 63 secondes"
+        ],
+        "reponse": "C"
+      },
+      {
+        "id": 56,
+        "categorie": "COMME BEAUCOUP DE FILLES",
+        "question": "Mais qui était Kelly Marlene Taylor ?",
+        "options": [
+          "A. La femme qui a mis au point la technologie du GPS",
+          "B. La première femme avec un bras bionique",
+          "C. L'une des héroïnes de Beverly Hills",
+          "D. La première femme dans l'espace",
+          "E. La première Américaine à avoir compris le film Inception"
+        ],
+        "reponse": "C",
+        "explication": "(c'est le personnage interprété par Jennie Garth, amoureuse de Dylan McKay et amie de Brandon Walsh)"
+      },
+      {
+        "id": 57,
+        "categorie": "LOREM IPSUM",
+        "question": "Quelle marque alimentaire a pour logo une souriante femme blonde sur un fond bleu ciel et 6 lettres en lettres capitales blanches sur fond rouge ?",
+        "reponse": "Tout de fruits"
+      },
+      {
+        "id": 58,
+        "categorie": "JACQUES MAYOL",
+        "question": "Comment appelle-t-on le bébé du dauphin ?",
+        "options": [
+          "A. Le dauphiné libéré",
+          "B. Le dauphinois",
+          "C. Le delphineau",
+          "D. Le dauphinot",
+          "E. La daurade"
+        ],
+        "reponse": "C"
+      },
+      {
+        "id": 59,
+        "categorie": "MONA LISA",
+        "question": "Laquelle de ces affirmations sur le tableau de la Joconde est fausse ?",
+        "options": [
+          "A. Mona Lisa croise 2 doigts de sa main droite au jour d'hui choisi",
+          "B. Mona Lisa a un surplus de peau proche de son œil gauche",
+          "C. Les yeux de Mona Lisa sont tournés vers la gauche",
+          "D. Mona Lisa porte un fin voile noir",
+          "E. Au fond, on voit un pont enjambant une rivière"
+        ],
+        "reponse": "A"
+      },
+      {
+        "id": 60,
+        "categorie": "FORT DE CAFE",
+        "question": "Quelle marque se présente comme 'le chef-d'œuvre du café italien' ?",
+        "reponse": "San Marco"
+      },
+      {
+        "id": 61,
+        "categorie": "PEIN EXPRESS",
+        "question": "Retrouve 3 des 5 pays où se trouve chacun des monuments et lieux touristiques suivants.",
+        "options": [
+          "A. Angkor Vat, un temple khmer",
+          "B. La pagode Shwedagon, un stûpa doré",
+          "C. La grande mosquée de Sheikh Zayed",
+          "D. Le temple Wat Rong Khun (tout blanc)",
+          "E. Le Cau Vang un pont de 150 mètres soutenu par 2 immenses mains en béton"
+        ],
+        "reponse": "A. Cambodge; B. Birmanie; C. Émirats arabes unis; D. Thaïlande; E. Vietnam"
+      },
+      {
+        "id": 62,
+        "categorie": "L'ÂCE DE RAISON",
+        "question": "Range les chanteurs suivants de la plus récente à la moins récente.",
+        "options": [
+          "A. Mariah Carey qui brille pour toujours",
+          "B. Shakira Isabel Mebarah Ripoll, la",
+          "C. Enrico Macias enfant de tous pays et",
+          "D. Serge Gainsbourg, la vieille canaille",
+          "E. Pharell Williams Grand des duos"
+        ],
+        "reponse": "B, E, A, C, D",
+        "explication": "(Shakira en 1977, Pharell en 1973, Mariah en 1970, Enrico en 1938 et Serge en 1928)"
+      },
+      {
+        "id": 63,
+        "categorie": "SANS PEUR ET SANS DESPROGES",
+        "question": "Complète cette citation de Pierre Desproges.\n\n\"L'amour, c'est comme les cartes: si tu n'as pas de partenaire, il te faut...\"",
+        "reponse": "\"... une bonne main.\""
+      },
+      {
+        "id": 64,
+        "categorie": "L'APPEL À UN AMI",
+        "question": "Estime le coût à la minute d'un appel local pour s'inscrire à la présélection de l'émission Qui veut gagner des millions ?, en novembre 2000.\n\nTu as droit à une marge d'erreur de 10 %.",
+        "reponse": "3,68 francs la minute",
+        "tolerance": "(propositions entre 3,31 et 4,05 francs acceptées; propositions données en euros non validées)"
+      },
+      {
+        "id": 65,
+        "categorie": "LA MANIE DU MYTHO",
+        "question": "Laquelle de ces 4 propositions est un mytho ?",
+        "options": [
+          "A. Les bocaux ronds pour poissons rouges sont interdits aux Pays-Bas",
+          "B. En se tenant épaule contre épaule, la population mondiale pourrait tenir dans Los Angeles",
+          "C. Une même personne a déjà produit les émissions Koh-Lanta, Les Minikeums et Star Academy",
+          "D. L'expression \"se mettre la rate au court-bouillon\" est née dans les cuisines de Louis XVI"
+        ],
+        "reponse": "D",
+        "explication": "(elle est apparue dans un livre de San-Antonio, en 1965)"
+      },
+      {
+        "id": 66,
+        "categorie": "COULE RAOUL",
+        "question": "Si tu déposes délicatement les objets suivants dans une bassine d'eau, lesquels flotteront ?",
+        "options": [
+          "A. Une cuillère en métal",
+          "B. Un bouchon de liège",
+          "C. Une balle de ping-pong",
+          "D. Une orange non épluchée",
+          "E. Une orange épluchée",
+          "F. De la pâte à modeler en forme de bol aux parois minces"
+        ],
+        "reponse": "B, C, D et F"
+      },
+      {
+        "id": 67,
+        "categorie": "LES BEAUX MECS",
+        "question": "Le magazine américain People dévoile chaque année le nom de l'homme vivant le plus sexy.\n\nParmi ces propositions, trouve les 4 mâles étant arrivés 2 fois en tête de ce classement entre 1985 et 2022.\n\nRichard Gere, Denzel Washington, Brad Pitt, George Clooney, Mel Gibson, Johnny Depp, Tom Cruise, Bradley Cooper et Benicio Del Toro",
+        "reponse": "Brad Pitt, George Clooney, Johnny Depp et Richard Gere"
+      },
+      {
+        "id": 68,
+        "categorie": "AVERTO",
+        "question": "En France, avant 2022, de nombreuses personnes téléchargaient illégalement les albums de Marc Lavoine et vivaient dans la peur de recevoir un mail d'HADOPI.\n\nSi tu retrouves 3 des 6 mots composant l'acronyme HADOPI, tu gagneras cette partie endiablée.",
+        "reponse": "Haute, Autorité, Diffusion, Œuvres, Protection, Internet",
+        "explication": "(Haute autorité pour la diffusion des œuvres et la protection des droits sur internet)"
+      },
+      {
+        "id": 69,
+        "categorie": "PROTO",
+        "question": "Quel protocole, signé par la majorité des pays du monde, fixe des règles en cas de guerre et traite de la protection des personnes durant cette période ?",
+        "reponse": "Les conventions de Genève"
+      },
+      {
+        "id": 70,
+        "categorie": "ET PARABOLIQUES",
+        "question": "Rappelle-nous les 5 émotions dans la tête de Riley dans le long-métrage d'animation Vice-Versa.",
+        "reponse": "Joie, Tristesse, Colère, Peur et Dégoût"
+      },
+      {
+        "id": 71,
+        "categorie": "PARTIR UN JOUR",
+        "question": "Parmi ces propositions, laquelle n'est jamais apparue sur la pochette d'un album des 2Be3 ?",
+        "options": [
+          "A. Toujours là pour toi",
+          "B. Ils sont jeunes, talentueux et complètement craquants",
+          "C. Back dans les bacs",
+          "D. Tu vas découvrir une nouvelle manière de vivre ta passion"
+        ],
+        "reponse": "C"
+      },
+      {
+        "id": 72,
+        "categorie": "BAW LANMOU",
+        "question": "Retrouve la chanson grâce à ces paroles traduites en langue française :\n\n\"Si tu veux que ça continue entre nous, relâche la corde pour que je puisse bouger. Eh ben, \"monsieur bobo\", Bibi aime la musique branchée. Les lasers, les cassettes vidéo me permettent de m'évader pendant quelques instants.\"",
+        "reponse": "Maldon (de Zouk Machine)"
+      },
+      {
+        "id": 73,
+        "categorie": "TROUBLANT",
+        "question": "Lequel de ces romans n'existe pas ?",
+        "options": [
+          "A. Épicuriens en eau trouble",
+          "B. Prêcheur en eau trouble",
+          "C. Plongée en eau trouble",
+          "D. Requiem en eau trouble",
+          "E. Surf en eau trouble"
+        ],
+        "reponse": "A"
+      },
+      {
+        "id": 74,
+        "categorie": "ARRIÈRE-PETITS-ENFANTS DE LA TÉLÉ ?",
+        "question": "Toi qui suis les actualités avec soin et volubilité, dis-moi en quelle année fut diffusé le premier journal télévisé en France.\n\nUne marge d'erreur sera tolérée.\n\nIndice : Pierre Sabbagh avait mis sa plus belle cravate !",
+        "reponse": "1949",
+        "tolerance": "(propositions entre 1946 et 1952 acceptées)"
+      },
+      {
+        "id": 75,
+        "categorie": "ROBERJOT",
+        "question": "La frangipane n'a aucun secret pour moi.\n\nEn revanche, peux-tu m'indiquer la signification du mot épiphanie, étymologiquement parlant ?",
+        "options": [
+          "A. Une apparition",
+          "B. Un acte éphémère",
+          "C. Le néant",
+          "D. Un repli sur soi",
+          "E. Le festin"
+        ],
+        "reponse": "A"
+      },
+      {
+        "id": 76,
+        "categorie": "LES MANGOUSTES",
+        "question": "Qu'est-ce qu'une mangrove ?",
+        "reponse": "C'est une forêt (ou un écosystème) maritime qui pousse le long des littoraux ou dans des marais"
+      },
+      {
+        "id": 77,
+        "categorie": "LANCER FRANC",
+        "question": "Tu connais Horst Schultz ? Non ? Tant mieux.\n\nCe personnage détient le magnifique record de l'éjaculation la plus longue en termes de distance.\n\nDis-moi très vite quel est ce record. Indice : la moyenne est de 20 cm.",
+        "options": [
+          "A. 71 centimètres",
+          "B. 1,71 mètre",
+          "C. 3,71 mètres",
+          "D. 5,71 mètres",
+          "E. 7,71 mètres"
+        ],
+        "reponse": "D"
+      },
+      {
+        "id": 78,
+        "categorie": "Ô PUISSANCE DÉMONIAQUE",
+        "question": "Le kakapo est le plus grand perroquet au monde.\n\nParmi les particularités suivantes, seules 2 sont vraies. Lesquelles ?",
+        "options": [
+          "A. Il ne mange que des Snickers glacés",
+          "B. C'est le seul perroquet à ne pas pouvoir voler",
+          "C. La quasi-totalité des individus de cette espèce sont munis d'un transmetteur radio",
+          "D. Il a inspiré le personnage de Iago dans Aladdin",
+          "E. En hiver, il hiberne durant 3 mois et ressort au printemps"
+        ],
+        "reponse": "B et C"
+      },
+      {
+        "id": 79,
+        "categorie": "LE DOUBLE MÈTRE",
+        "question": "Lors de son fameux discours sur la libération de Paris, en 1944, combien de fois le général de Gaulle prononce-t-il le mot \"Paris\" ?\n\nIndice : la partie du discours qui m'intéresse dure 42 secondes et commence par \"Paris, Paris outragée...\"\n\nUne marge d'erreur sera tolérée.",
+        "reponse": "5 fois",
+        "tolerance": "(propositions entre 4 et 6 fois acceptées)"
+      },
+      {
+        "id": 80,
+        "categorie": "L'IMPROVIDENCE",
+        "question": "Peux-tu me donner l'orthographe du mot suivant, qui désigne au théâtre \"une courte scène\" ?",
+        "options": [
+          "A. Cénette",
+          "B. Scénette",
+          "C. Sainette",
+          "D. Saynète"
+        ],
+        "reponse": "D"
+      },
+      {
+        "id": 81,
+        "categorie": "LA LOI, C'EST LA LOI",
+        "question": "Si une de tes passions dans la vie est de saccager des radars automatiques de contrôle de vitesse, quelle amende maximale risques-tu, en vertu de l'article 322-3 du Code pénal ?",
+        "options": [
+          "A. 75 €",
+          "B. 750 €",
+          "C. 7.500 €",
+          "D. 75.000 €"
+        ],
+        "reponse": "D"
+      },
+      {
+        "id": 82,
+        "categorie": "SOIS CONCENTRÉ",
+        "question": "Tu as 15 secondes pour répondre à la question suivante.\n\nQu'obtiens-tu si tu additionnes l'année de naissance de ton père, ton année de naissance, l'âge de ton père, ton âge, le tout divisé par 2 ?",
+        "reponse": "On obtient gentiment l'année en cours"
+      },
+      {
+        "id": 83,
+        "categorie": "CARPE DIEM",
+        "question": "Quelle langue, encore utilisée aujourd'hui, est la plus proche du latin en termes de phonétique ?",
+        "options": [
+          "A. L'espagnol (de l'Espagne)",
+          "B. Le sarde (de l'île de Sardaigne)",
+          "C. Le croate (de la Croatie)",
+          "D. Le maltais (de l'île de Malte)"
+        ],
+        "reponse": "B"
+      },
+      {
+        "id": 84,
+        "categorie": "C'EST PAS CE QUE VOUS CROYEZ",
+        "question": "En Nouvelle-Calédonie, que veut-on te dire si on te dit \"tata !\" ?",
+        "reponse": "Au revoir"
+      },
+      {
+        "id": 85,
+        "categorie": "LUGDU",
+        "question": "Pourrais-tu m'indiquer, parmi les propositions ci-dessous, laquelle est la devise de la ville de Lyon ?",
+        "options": [
+          "A. La Vierge Marie, mère de tout un chacun",
+          "B. Si si la famille",
+          "C. Il est battu par les flots, mais ne sombre pas",
+          "D. Qui ne saute pas n'est pas Lyonnais",
+          "E. Grande clémence fait la grandeur de tout être",
+          "F. La chance pour compagne, le courage pour guide"
+        ],
+        "reponse": "F"
+      },
+      {
+        "id": 86,
+        "categorie": "GIVE ME A SIGN",
+        "question": "Retrouve 8 des 14 pays de la tournée mondiale en 2000 et 2001 de Britney Spears.\n\nOn parle bien sûr de la tournée Oops!... I Did It Again Tour.\n\nTu auras le droit à 12 propositions max (donc 4 erreurs max).",
+        "reponse": "États-Unis, Canada, Royaume-Uni (Angleterre ou Grande-Bretagne), Allemagne, Belgique, Espagne, Italie, Suisse, Pays-Bas, Suède, Norvège, Danemark, France et Brésil"
+      },
+      {
+        "id": 87,
+        "categorie": "LA FUREUR",
+        "question": "Qu'est-ce que l'ippitsuryu, à ton avis ?",
+        "options": [
+          "A. L'art de se déguiser en dragon",
+          "B. L'art de peindre un dragon d'un seul coup de pinceau",
+          "C. L'art de raconter les histoires ancestrales des dragons",
+          "D. L'art d'imiter un dragon en train de bâiller",
+          "E. L'art de dessiner un dragon dans les nuages"
+        ],
+        "reponse": "B"
+      }
+    ]
+  }

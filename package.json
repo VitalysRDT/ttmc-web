@@ -5,19 +5,45 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "import-questions": "tsx scripts/import-questions.ts",
+    "import-questions:dry": "tsx scripts/import-questions.ts --dry-run",
+    "import-questions:upload": "tsx scripts/import-questions.ts --upload"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
+    "@tanstack/react-query": "^5.96.2",
+    "@upstash/redis": "^1.37.0",
+    "clsx": "^2.1.1",
+    "drizzle-orm": "^0.45.2",
+    "framer-motion": "^12.38.0",
+    "jose": "^6.2.2",
+    "lucide-react": "^1.7.0",
+    "nanoid": "^5.1.7",
     "next": "16.2.2",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "tailwind-merge": "^3.5.0",
+    "zod": "^4.3.6",
+    "zustand": "^5.0.12"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/ui": "^4.1.3",
+    "dotenv": "^17.4.1",
+    "drizzle-kit": "^0.31.10",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "tsx": "^4.21.0",
+    "typescript": "^5",
+    "vitest": "^4.1.3"
   }
 }
