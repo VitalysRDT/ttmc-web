@@ -56,42 +56,58 @@ export default function GamePage({ params }: Props) {
     );
   }
 
+  const currentPlayerId = room.gameState.currentPlayerId;
+
   return (
     <main className="min-h-dvh p-4 md:p-8">
-      <div className="mx-auto flex max-w-5xl flex-col items-center gap-6">
+      <div className="mx-auto flex max-w-6xl flex-col gap-6">
         {/* HUD top */}
-        <div className="flex w-full items-center justify-between">
+        <div className="flex w-full items-center justify-between gap-4">
           <div className="text-xs tracking-[0.2em] text-white/50">
             TOUR {room.gameState.currentRound}
           </div>
-          <div className="flex gap-4">
-            {room.players.map((p) => (
-              <div key={p.id} className="text-center">
-                <div className="text-xs text-white/50">{p.pseudo}</div>
-                <div className="text-lg font-black text-[var(--color-primary)]">
-                  {room.gameState!.playerPositions[p.id] ?? 0}/50
+          <div className="flex gap-4 md:gap-6">
+            {room.players.map((p) => {
+              const pos = room.gameState!.playerPositions[p.id] ?? 0;
+              const isActive = p.id === currentPlayerId;
+              return (
+                <div
+                  key={p.id}
+                  className={`text-center rounded-xl px-3 py-1 transition-colors ${
+                    isActive ? 'bg-[var(--color-primary)]/20' : ''
+                  }`}
+                >
+                  <div
+                    className={`text-xs ${
+                      isActive ? 'text-[var(--color-primary)]' : 'text-white/50'
+                    }`}
+                  >
+                    {p.pseudo}
+                  </div>
+                  <div className="text-lg font-black text-[var(--color-primary)]">
+                    CASE {pos}/50
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
-        {/* Phase content */}
-        <PhaseRenderer room={room} currentPlayer={player} />
+        {/* Contenu principal : phase + plateau côte à côte sur desktop, empilés sur mobile */}
+        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+          <div className="flex flex-col items-center">
+            <PhaseRenderer room={room} currentPlayer={player} />
+          </div>
 
-        {/* Plateau compact */}
-        <details className="w-full mt-4">
-          <summary className="cursor-pointer text-sm text-white/60 text-center">
-            Afficher le plateau
-          </summary>
-          <div className="mt-4 flex justify-center">
+          <div className="flex flex-col items-center gap-2">
+            <div className="text-xs tracking-[0.2em] text-white/50">PLATEAU</div>
             <GameBoard
               players={room.players}
               playerPositions={room.gameState.playerPositions}
               currentPlayerId={room.gameState.currentPlayerId}
             />
           </div>
-        </details>
+        </div>
       </div>
     </main>
   );

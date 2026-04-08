@@ -132,47 +132,35 @@ export async function startGame(roomId: string, hostId: string): Promise<void> {
   await updateRoomGameState(roomId, initialState, 'playing');
 }
 
-/** Soumet une réponse à la question Débuter. */
-export async function submitDebuterAnswer(
+/**
+ * Désigne le joueur qui commence la partie en phase Débuter.
+ *
+ * Les questions Débuter sont des instructions de sélection (ex: "le joueur le plus jeune commence")
+ * et non des questions avec une bonne réponse. N'importe quel joueur peut cliquer sur le joueur
+ * désigné, le premier clic gagne et lance la partie immédiatement.
+ */
+export async function selectStartingPlayer(
   roomId: string,
-  playerId: string,
-  isCorrect: boolean,
+  callerId: string,
+  selectedPlayerId: string,
 ): Promise<void> {
   const room = await loadRoomOrThrow(roomId);
   const state = room.gameState;
-  if (!state || !state.currentTurn) throw new GameError('Aucun tour en cours');
+  if (!state) throw new GameError('État manquant');
   if (state.currentPhase !== 'debuter_question') throw new GameError('Phase incorrecte');
-  if (state.debuterAnswers[playerId]) throw new GameError('Vous avez déjà répondu');
-
-  const updatedDebuter = {
-    ...state.debuterAnswers,
-    [playerId]: isCorrect ? '✓' : '✗',
-  };
-  let updated: GameState = { ...state, debuterAnswers: updatedDebuter };
-
-  // Fix bug #3 : au lieu d'un setTimeout côté client, on pose un timestamp serveur
-  if (isCorrect && state.firstCorrectDebuterId === null) {
-    updated = {
-      ...updated,
-      firstCorrectDebuterId: playerId,
-      currentPlayerId: playerId,
-      phaseTransitionAt: new Date(Date.now() + GAME_CONSTANTS.debuterTransitionDelayMs),
-    };
+  if (state.firstCorrectDebuterId) {
+    // Déjà désigné → idempotent, on ne fait rien
+    return;
   }
-  await updateRoomGameState(roomId, updated);
-}
+  const callerInRoom = room.players.some((p) => p.id === callerId);
+  if (!callerInRoom) throw new GameError('Vous ne faites pas partie de la salle', 403);
+  const selectedInRoom = room.players.some((p) => p.id === selectedPlayerId);
+  if (!selectedInRoom) throw new GameError('Joueur sélectionné inconnu', 400);
 
-/** Commit la transition Débuter → waiting_to_start si l'échéance est atteinte. */
-export async function commitDebuterTransition(roomId: string): Promise<void> {
-  const room = await loadRoomOrThrow(roomId);
-  const state = room.gameState;
-  if (!state || state.currentPhase !== 'debuter_question') return;
-  if (!state.firstCorrectDebuterId || !state.phaseTransitionAt) return;
-  if (state.phaseTransitionAt.getTime() > Date.now()) {
-    return; // Trop tôt, on attend
-  }
   const updated: GameState = {
     ...state,
+    firstCorrectDebuterId: selectedPlayerId,
+    currentPlayerId: selectedPlayerId,
     currentPhase: 'waiting_to_start',
     currentTurn: null,
     phaseStartedAt: new Date(),

@@ -91,12 +91,10 @@ export async function nextTurnAction(roomId: string): Promise<void> {
   await parseJsonOrThrow(res);
 }
 
-export async function submitDebuterAnswer(roomId: string, isCorrect: boolean): Promise<void> {
-  const res = await post(`/api/rooms/${roomId}/debuter/answer`, { isCorrect });
-  await parseJsonOrThrow(res);
-}
-
-export async function commitDebuterTransition(roomId: string): Promise<void> {
-  const res = await post(`/api/rooms/${roomId}/debuter/commit`);
+export async function selectStartingPlayer(
+  roomId: string,
+  playerId: string,
+): Promise<void> {
+  const res = await post(`/api/rooms/${roomId}/debuter/select`, { playerId });
   await parseJsonOrThrow(res);
 }
