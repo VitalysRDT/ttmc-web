@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/Button';
 import { QuestionCard } from './QuestionCard';
@@ -8,17 +8,10 @@ import { CountdownOverlay } from './CountdownOverlay';
 import { DifficultySelector } from './DifficultySelector';
 import { HonorButtons } from './HonorButtons';
 import { CategoryBadge } from './CategoryBadge';
-import {
-  selectDifficulty,
-  submitAnswer,
-  selectStartingPlayer,
-  startTurn,
-  nextTurnAction,
-  revealAnswerAction,
-} from '@/lib/api/client-actions';
+import { useGameActions } from '@/lib/hooks/useGameActions';
 import { serverNow } from '@/lib/hooks/useServerTime';
 import { GAME_CONSTANTS } from '@/lib/schemas/enums';
-import { SQUARE_CATEGORIES, CATEGORY_LABELS } from '@/lib/game/board-positions';
+import { SQUARE_CATEGORIES } from '@/lib/game/board-positions';
 import type { GameRoom } from '@/lib/schemas/game-room.schema';
 import type { Player } from '@/lib/schemas/player.schema';
 
@@ -28,6 +21,7 @@ interface Props {
 }
 
 export function PhaseRenderer({ room, currentPlayer }: Props) {
+  const actions = useGameActions();
   const state = room.gameState;
 
   const isCurrentPlayer = state?.currentPlayerId === currentPlayer.id;
@@ -36,25 +30,39 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
     room.players.find((p) => p.id === state?.currentPlayerId)?.pseudo ?? 'Joueur';
   const turn = state?.currentTurn;
 
-  const phaseStartedAt = state?.phaseStartedAt ?? null;
+  // Fix bug #1 C3 : utilise le timestamp primitif (number) comme dépendance au lieu
+  // de l'instance Date. Zod recrée une Date à chaque fetch, donc l'useEffect se
+  // redéclencherait à chaque polling si on utilisait state.phaseStartedAt directement.
+  const phaseStartedAtMs = state?.phaseStartedAt?.getTime() ?? null;
   const currentPhase = state?.currentPhase;
 
-  // Auto-transition reading_question → answering après le countdown 5s
+  // Fix bug #1 C3 : mémorise le dernier timestamp pour lequel un reveal a été planifié.
+  // Garantit un seul setTimeout par phase `reading_question`, peu importe combien de
+  // fois le polling re-render ce composant.
+  const revealPlannedForRef = useRef<number | null>(null);
+
   useEffect(() => {
-    if (currentPhase !== 'reading_question') return;
-    if (!phaseStartedAt) return;
-    if (!isCurrentPlayer) return;
-    const elapsed = serverNow() - phaseStartedAt.getTime();
-    const remaining = GAME_CONSTANTS.readCountdownSeconds * 1000 - elapsed;
-    if (remaining <= 0) {
-      revealAnswerAction(room.id).catch(() => {});
+    if (currentPhase !== 'reading_question') {
+      revealPlannedForRef.current = null;
       return;
     }
+    if (!phaseStartedAtMs) return;
+    if (!isCurrentPlayer) return;
+    // Déjà planifié pour ce phaseStartedAt précis ?
+    if (revealPlannedForRef.current === phaseStartedAtMs) return;
+    revealPlannedForRef.current = phaseStartedAtMs;
+
+    const elapsed = serverNow() - phaseStartedAtMs;
+    // Ajoute une marge de +100ms sur la durée client pour être certain que le
+    // guard serveur (minElapsed = 5000 - 300 = 4700ms) accepte notre appel.
+    const targetMs = GAME_CONSTANTS.readCountdownSeconds * 1000 + 100;
+    const remaining = Math.max(0, targetMs - elapsed);
+
     const timer = setTimeout(() => {
-      revealAnswerAction(room.id).catch(() => {});
+      actions.revealAnswer(room.id).catch(() => {});
     }, remaining);
     return () => clearTimeout(timer);
-  }, [currentPhase, phaseStartedAt, room.id, isCurrentPlayer]);
+  }, [currentPhase, phaseStartedAtMs, room.id, isCurrentPlayer, actions]);
 
   if (!state) return null;
 
@@ -80,7 +88,7 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
             <Button
               size="lg"
               onClick={() =>
-                startTurn(room.id).catch((err) =>
+                actions.startTurn(room.id).catch((err) =>
                   alert(err instanceof Error ? err.message : String(err)),
                 )
               }
@@ -109,7 +117,7 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
             question={turn.question}
             disabled={!isCurrentPlayer}
             onConfirm={(d) =>
-              selectDifficulty(room.id, d).catch((err) =>
+              actions.selectDifficulty(room.id, d).catch((err) =>
                 alert(err instanceof Error ? err.message : String(err)),
               )
             }
@@ -149,12 +157,12 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
           {isCurrentPlayer ? (
             <HonorButtons
               onCorrect={() =>
-                submitAnswer(room.id, true).catch((err) =>
+                actions.submitAnswer(room.id, true).catch((err) =>
                   alert(err instanceof Error ? err.message : String(err)),
                 )
               }
               onIncorrect={() =>
-                submitAnswer(room.id, false).catch((err) =>
+                actions.submitAnswer(room.id, false).catch((err) =>
                   alert(err instanceof Error ? err.message : String(err)),
                 )
               }
@@ -191,7 +199,7 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
             <Button
               size="lg"
               onClick={() =>
-                nextTurnAction(room.id).catch((err) =>
+                actions.nextTurn(room.id).catch((err) =>
                   alert(err instanceof Error ? err.message : String(err)),
                 )
               }
@@ -214,15 +222,8 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
   }
 }
 
-/**
- * Phase Débuter : affiche l'instruction de sélection et permet de désigner
- * le joueur qui commence.
- *
- * Les questions Débuter sont des instructions ("l'équipe la plus nombreuse commence",
- * "le joueur le plus jeune commence", etc.) et pas des questions avec une bonne réponse.
- * Les joueurs appliquent l'instruction puis désignent le joueur qui commence via un clic.
- */
 function DebuterPhaseView({ room, currentPlayer }: { room: GameRoom; currentPlayer: Player }) {
+  const actions = useGameActions();
   const state = room.gameState!;
   const turn = state.currentTurn;
   const [loading, setLoading] = useState<string | null>(null);
@@ -236,7 +237,7 @@ function DebuterPhaseView({ room, currentPlayer }: { room: GameRoom; currentPlay
   const handleSelect = async (playerId: string) => {
     setLoading(playerId);
     try {
-      await selectStartingPlayer(room.id, playerId);
+      await actions.selectStartingPlayer(room.id, playerId);
     } catch (err) {
       alert(err instanceof Error ? err.message : String(err));
       setLoading(null);
@@ -252,7 +253,6 @@ function DebuterPhaseView({ room, currentPlayer }: { room: GameRoom; currentPlay
         </p>
       </div>
 
-      {/* Instruction Débuter */}
       <div className="flex flex-col gap-5 rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 w-full">
         <div className="flex items-center justify-between">
           <CategoryBadge category="debuter" />
@@ -273,7 +273,6 @@ function DebuterPhaseView({ room, currentPlayer }: { room: GameRoom; currentPlay
         )}
       </div>
 
-      {/* Résultat si déjà désigné */}
       {selectedPlayer && (
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
@@ -289,7 +288,6 @@ function DebuterPhaseView({ room, currentPlayer }: { room: GameRoom; currentPlay
         </motion.div>
       )}
 
-      {/* Boutons de désignation */}
       {!selectedPlayer && (
         <div className="w-full flex flex-col gap-3">
           <div className="text-center text-xs tracking-[0.2em] text-white/50">

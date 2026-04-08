@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getSessionPlayerId } from '@/lib/auth/session';
-import { removePlayerFromRoom } from '@/lib/api/room-repo';
+import { removePlayerFromRoom, getRoomById } from '@/lib/api/room-repo';
 
 export async function POST(_request: Request, context: { params: Promise<{ id: string }> }) {
   const playerId = await getSessionPlayerId();
@@ -9,5 +9,7 @@ export async function POST(_request: Request, context: { params: Promise<{ id: s
   }
   const { id } = await context.params;
   await removePlayerFromRoom(id, playerId);
-  return NextResponse.json({ ok: true });
+  // La room peut avoir été supprimée si vide
+  const room = await getRoomById(id);
+  return NextResponse.json({ ok: true, room });
 }

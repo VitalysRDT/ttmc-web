@@ -192,11 +192,15 @@ export async function startTurn(roomId: string, playerId: string): Promise<void>
     completedAt: null,
   };
 
+  // Fix bug #1 : buffer +600ms pour absorber la latence polling côté client.
+  // Pour selecting_difficulty, pas besoin de buffer (pas de countdown).
+  // Pour reading_question direct (questions non-standard), on ajoute le buffer.
+  const isDirectReading = question.kind !== 'standard';
   const updated: GameState = {
     ...state,
-    currentPhase: question.kind === 'standard' ? 'selecting_difficulty' : 'reading_question',
+    currentPhase: isDirectReading ? 'reading_question' : 'selecting_difficulty',
     currentTurn: newTurn,
-    phaseStartedAt: new Date(),
+    phaseStartedAt: new Date(Date.now() + (isDirectReading ? 600 : 0)),
     phaseTransitionAt: null,
     usedQuestionIds: [...state.usedQuestionIds, question.id],
   };
@@ -228,28 +232,39 @@ export async function selectDifficulty(
     selectedDifficulty: difficulty,
     startedAt: new Date(),
   };
+  // Fix bug #1 : buffer +600ms sur phaseStartedAt pour absorber la latence polling
+  // (jusqu'à 1s) côté client. Tous les joueurs voient alors un countdown complet
+  // même si leur premier fetch arrive jusqu'à 600ms après le POST serveur.
   const updated: GameState = {
     ...state,
     currentPhase: 'reading_question',
     currentTurn: updatedTurn,
-    phaseStartedAt: new Date(),
+    phaseStartedAt: new Date(Date.now() + 600),
   };
   await updateRoomGameState(roomId, updated);
 }
 
-/** Transition reading_question → answering (après countdown 5s). Fix bug #1. */
+/**
+ * Transition reading_question → answering après le countdown de 5s.
+ *
+ * Fix bug #1 :
+ *  - `phaseStartedAt` est posé avec un buffer +600ms dans `selectDifficulty`, donc
+ *    `elapsed` peut être négatif pendant le buffer (tout le monde attend).
+ *  - Le guard refuse strictement tout appel qui arrive avant `readCountdownSeconds * 1000
+ *    - 300ms` pour tolérer les clock skews mineurs, en levant une GameError 409 (au lieu
+ *    du return silencieux de la v1 qui masquait les bugs côté client).
+ */
 export async function revealAnswer(roomId: string, playerId: string): Promise<void> {
   const room = await loadRoomOrThrow(roomId);
   const state = room.gameState;
   if (!state) return;
   if (state.currentPlayerId !== playerId) return;
   if (state.currentPhase !== 'reading_question') return;
-  // Vérifie que le countdown est bien écoulé (fix bug #1 — pas de skip possible)
   if (state.phaseStartedAt) {
     const elapsed = Date.now() - state.phaseStartedAt.getTime();
-    if (elapsed < GAME_CONSTANTS.readCountdownSeconds * 1000 - 200) {
-      // Trop tôt, on ne révèle pas
-      return;
+    const minElapsed = GAME_CONSTANTS.readCountdownSeconds * 1000 - 300;
+    if (elapsed < minElapsed) {
+      throw new GameError('Countdown non écoulé', 409);
     }
   }
   const updated: GameState = {

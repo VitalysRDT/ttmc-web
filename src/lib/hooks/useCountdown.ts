@@ -11,6 +11,10 @@ import { GAME_CONSTANTS } from '@/lib/schemas/enums';
  * court-circuité si la phase changeait rapidement. Ici, le countdown est calculé
  * uniquement à partir de `startedAt` (timestamp serveur) — tous les clients voient
  * exactement le même compte à rebours.
+ *
+ * Particularité : `startedAt` peut être légèrement dans le futur (buffer +600ms posé
+ * côté serveur dans `selectDifficulty`). On gère ce cas en affichant `durationSec`
+ * jusqu'à ce que l'instant démarre vraiment.
  */
 export function useCountdown(startedAt: Date | null | undefined, durationSec: number): number {
   const [remaining, setRemaining] = useState(durationSec);
@@ -22,7 +26,13 @@ export function useCountdown(startedAt: Date | null | undefined, durationSec: nu
     }
     const startTs = startedAt instanceof Date ? startedAt.getTime() : new Date(startedAt).getTime();
     const tick = () => {
-      const elapsedSec = (serverNow() - startTs) / 1000;
+      const now = serverNow();
+      const elapsedSec = (now - startTs) / 1000;
+      if (elapsedSec < 0) {
+        // startedAt est dans le futur (buffer serveur) — on affiche la durée totale
+        setRemaining(durationSec);
+        return;
+      }
       const left = Math.max(0, Math.ceil(durationSec - elapsedSec));
       setRemaining(left);
     };

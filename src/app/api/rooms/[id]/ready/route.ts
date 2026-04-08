@@ -13,5 +13,6 @@ export async function POST(_request: Request, context: { params: Promise<{ id: s
     return NextResponse.json({ error: 'Salle introuvable' }, { status: 404 });
   }
   await togglePlayerReady(id, playerId);
-  return NextResponse.json({ ok: true });
+  const updatedRoom = await getRoomById(id);
+  return NextResponse.json({ ok: true, room: updatedRoom });
 }
