@@ -1,16 +1,14 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { Eye } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { QuestionCard } from './QuestionCard';
-import { CountdownOverlay } from './CountdownOverlay';
 import { DifficultySelector } from './DifficultySelector';
 import { HonorButtons } from './HonorButtons';
 import { CategoryBadge } from './CategoryBadge';
 import { useGameActions } from '@/lib/hooks/useGameActions';
-import { serverNow } from '@/lib/hooks/useServerTime';
-import { GAME_CONSTANTS } from '@/lib/schemas/enums';
 import { SQUARE_CATEGORIES } from '@/lib/game/board-positions';
 import type { GameRoom } from '@/lib/schemas/game-room.schema';
 import type { Player } from '@/lib/schemas/player.schema';
@@ -29,40 +27,6 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
   const currentPlayerName =
     room.players.find((p) => p.id === state?.currentPlayerId)?.pseudo ?? 'Joueur';
   const turn = state?.currentTurn;
-
-  // Fix bug #1 C3 : utilise le timestamp primitif (number) comme dépendance au lieu
-  // de l'instance Date. Zod recrée une Date à chaque fetch, donc l'useEffect se
-  // redéclencherait à chaque polling si on utilisait state.phaseStartedAt directement.
-  const phaseStartedAtMs = state?.phaseStartedAt?.getTime() ?? null;
-  const currentPhase = state?.currentPhase;
-
-  // Fix bug #1 C3 : mémorise le dernier timestamp pour lequel un reveal a été planifié.
-  // Garantit un seul setTimeout par phase `reading_question`, peu importe combien de
-  // fois le polling re-render ce composant.
-  const revealPlannedForRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (currentPhase !== 'reading_question') {
-      revealPlannedForRef.current = null;
-      return;
-    }
-    if (!phaseStartedAtMs) return;
-    if (!isCurrentPlayer) return;
-    // Déjà planifié pour ce phaseStartedAt précis ?
-    if (revealPlannedForRef.current === phaseStartedAtMs) return;
-    revealPlannedForRef.current = phaseStartedAtMs;
-
-    const elapsed = serverNow() - phaseStartedAtMs;
-    // Ajoute une marge de +100ms sur la durée client pour être certain que le
-    // guard serveur (minElapsed = 5000 - 300 = 4700ms) accepte notre appel.
-    const targetMs = GAME_CONSTANTS.readCountdownSeconds * 1000 + 100;
-    const remaining = Math.max(0, targetMs - elapsed);
-
-    const timer = setTimeout(() => {
-      actions.revealAnswer(room.id).catch(() => {});
-    }, remaining);
-    return () => clearTimeout(timer);
-  }, [currentPhase, phaseStartedAtMs, room.id, isCurrentPlayer, actions]);
 
   if (!state) return null;
 
@@ -133,16 +97,41 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
     case 'reading_question':
       if (!turn) return null;
       return (
-        <>
-          <CountdownOverlay startedAt={state.phaseStartedAt} />
-          <div className="flex flex-col items-center gap-6 p-6">
-            <QuestionCard
-              question={turn.question}
-              difficulty={turn.selectedDifficulty}
-              showAnswer={false}
-            />
-          </div>
-        </>
+        <div className="flex flex-col items-center gap-6 p-6">
+          <QuestionCard
+            question={turn.question}
+            difficulty={turn.selectedDifficulty}
+            showAnswer={false}
+          />
+          {isCurrentPlayer ? (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-col items-center gap-2"
+            >
+              <Button
+                size="lg"
+                variant="secondary"
+                onClick={() =>
+                  actions.revealAnswer(room.id).catch((err) =>
+                    alert(err instanceof Error ? err.message : String(err)),
+                  )
+                }
+              >
+                <Eye size={18} className="mr-2" />
+                Voir la réponse
+              </Button>
+              <p className="text-[10px] tracking-[0.2em] text-white/40 uppercase">
+                Lis, réfléchis, puis clique
+              </p>
+            </motion.div>
+          ) : (
+            <p className="text-sm text-white/50 italic">
+              {currentPlayerName} lit la question…
+            </p>
+          )}
+        </div>
       );
 
     case 'answering':

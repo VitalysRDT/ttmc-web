@@ -192,15 +192,11 @@ export async function startTurn(roomId: string, playerId: string): Promise<void>
     completedAt: null,
   };
 
-  // Fix bug #1 : buffer +600ms pour absorber la latence polling côté client.
-  // Pour selecting_difficulty, pas besoin de buffer (pas de countdown).
-  // Pour reading_question direct (questions non-standard), on ajoute le buffer.
-  const isDirectReading = question.kind !== 'standard';
   const updated: GameState = {
     ...state,
-    currentPhase: isDirectReading ? 'reading_question' : 'selecting_difficulty',
+    currentPhase: question.kind === 'standard' ? 'selecting_difficulty' : 'reading_question',
     currentTurn: newTurn,
-    phaseStartedAt: new Date(Date.now() + (isDirectReading ? 600 : 0)),
+    phaseStartedAt: new Date(),
     phaseTransitionAt: null,
     usedQuestionIds: [...state.usedQuestionIds, question.id],
   };
@@ -232,27 +228,22 @@ export async function selectDifficulty(
     selectedDifficulty: difficulty,
     startedAt: new Date(),
   };
-  // Fix bug #1 : buffer +600ms sur phaseStartedAt pour absorber la latence polling
-  // (jusqu'à 1s) côté client. Tous les joueurs voient alors un countdown complet
-  // même si leur premier fetch arrive jusqu'à 600ms après le POST serveur.
   const updated: GameState = {
     ...state,
     currentPhase: 'reading_question',
     currentTurn: updatedTurn,
-    phaseStartedAt: new Date(Date.now() + 600),
+    phaseStartedAt: new Date(),
   };
   await updateRoomGameState(roomId, updated);
 }
 
 /**
- * Transition reading_question → answering après le countdown de 5s.
+ * Transition reading_question → answering.
  *
- * Fix bug #1 :
- *  - `phaseStartedAt` est posé avec un buffer +600ms dans `selectDifficulty`, donc
- *    `elapsed` peut être négatif pendant le buffer (tout le monde attend).
- *  - Le guard refuse strictement tout appel qui arrive avant `readCountdownSeconds * 1000
- *    - 300ms` pour tolérer les clock skews mineurs, en levant une GameError 409 (au lieu
- *    du return silencieux de la v1 qui masquait les bugs côté client).
+ * Déclenchée manuellement par le joueur actif quand il clique "Voir la réponse"
+ * après avoir lu la question et réfléchi. Pas de timer automatique : le joueur
+ * contrôle son rythme (flow TTMC original = "lit la question → réfléchit → dit
+ * sa réponse → retourne la carte pour voir la vraie réponse").
  */
 export async function revealAnswer(roomId: string, playerId: string): Promise<void> {
   const room = await loadRoomOrThrow(roomId);
@@ -260,13 +251,6 @@ export async function revealAnswer(roomId: string, playerId: string): Promise<vo
   if (!state) return;
   if (state.currentPlayerId !== playerId) return;
   if (state.currentPhase !== 'reading_question') return;
-  if (state.phaseStartedAt) {
-    const elapsed = Date.now() - state.phaseStartedAt.getTime();
-    const minElapsed = GAME_CONSTANTS.readCountdownSeconds * 1000 - 300;
-    if (elapsed < minElapsed) {
-      throw new GameError('Countdown non écoulé', 409);
-    }
-  }
   const updated: GameState = {
     ...state,
     currentPhase: 'answering',
