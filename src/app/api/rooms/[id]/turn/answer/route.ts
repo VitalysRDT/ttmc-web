@@ -4,7 +4,10 @@ import { getSessionPlayerId } from '@/lib/auth/session';
 import { submitAnswer, GameError } from '@/lib/api/game-service';
 import { getRoomById } from '@/lib/api/room-repo';
 
-const Body = z.object({ isCorrect: z.boolean() });
+const Body = z.union([
+  z.object({ isCorrect: z.boolean() }),
+  z.object({ subItemAnswers: z.record(z.string(), z.boolean()) }),
+]);
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
   const playerId = await getSessionPlayerId();
@@ -14,7 +17,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   if (!parsed.success) return NextResponse.json({ error: 'Body invalide' }, { status: 400 });
   const { id } = await context.params;
   try {
-    await submitAnswer(id, playerId, parsed.data.isCorrect);
+    await submitAnswer(id, playerId, parsed.data);
     const room = await getRoomById(id);
     return NextResponse.json({ ok: true, room });
   } catch (err) {

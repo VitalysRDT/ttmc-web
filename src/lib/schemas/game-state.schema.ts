@@ -13,6 +13,11 @@ export const GameTurnSchema = z.object({
   timeSpent: z.number().int().default(0),
   startedAt: z.coerce.date().nullable().optional(),
   completedAt: z.coerce.date().nullable().optional(),
+  /**
+   * Pour les cartes Intrépide uniquement : map lettre → bonne réponse (true) ou ratée (false).
+   * Permet de calculer `spaces = correctCount` côté serveur et d'afficher le récap au révélé.
+   */
+  subItemAnswers: z.record(z.string(), z.boolean()).optional(),
 });
 export type GameTurn = z.infer<typeof GameTurnSchema>;
 

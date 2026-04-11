@@ -6,6 +6,7 @@ import type { GameRoom } from '@/lib/schemas/game-room.schema';
 import {
   selectDifficulty as selectDifficultyAction,
   submitAnswer as submitAnswerAction,
+  submitIntrepideAnswer as submitIntrepideAnswerAction,
   selectStartingPlayer as selectStartingPlayerAction,
   startTurn as startTurnAction,
   nextTurnAction as nextTurnApiAction,
@@ -47,6 +48,13 @@ export function useGameActions() {
       },
       async submitAnswer(roomId: string, isCorrect: boolean) {
         const room = await submitAnswerAction(roomId, isCorrect);
+        applyRoom(roomId, room);
+      },
+      async submitIntrepideAnswer(
+        roomId: string,
+        subItemAnswers: Record<string, boolean>,
+      ) {
+        const room = await submitIntrepideAnswerAction(roomId, subItemAnswers);
         applyRoom(roomId, room);
       },
       async selectStartingPlayer(roomId: string, playerId: string) {

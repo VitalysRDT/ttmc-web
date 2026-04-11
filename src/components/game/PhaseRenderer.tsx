@@ -8,6 +8,7 @@ import { QuestionCard } from './QuestionCard';
 import { DifficultySelector } from './DifficultySelector';
 import { HonorButtons } from './HonorButtons';
 import { CategoryBadge } from './CategoryBadge';
+import { IntrepideAnswerCard } from './IntrepideAnswerCard';
 import { useGameActions } from '@/lib/hooks/useGameActions';
 import { SQUARE_CATEGORIES } from '@/lib/game/board-positions';
 import type { GameRoom } from '@/lib/schemas/game-room.schema';
@@ -136,6 +137,18 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
 
     case 'answering':
       if (!turn) return null;
+      if (turn.question.kind === 'intrepide') {
+        return (
+          <div className="flex flex-col items-center gap-6 p-6">
+            <IntrepideAnswerCard
+              question={turn.question}
+              roomId={room.id}
+              isCurrentPlayer={isCurrentPlayer}
+              currentPlayerName={currentPlayerName}
+            />
+          </div>
+        );
+      }
       return (
         <div className="flex flex-col items-center gap-6 p-6">
           <QuestionCard
@@ -164,19 +177,25 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
         </div>
       );
 
-    case 'revealing_answer':
+    case 'revealing_answer': {
       if (!turn) return null;
+      const intrepideCorrect =
+        turn.question.kind === 'intrepide' && turn.subItemAnswers
+          ? Object.values(turn.subItemAnswers).filter(Boolean).length
+          : null;
+      const advanced =
+        intrepideCorrect ?? (turn.question.kind === 'standard' ? turn.selectedDifficulty : 0);
       return (
         <div className="flex flex-col items-center gap-6 p-6">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             className={`text-4xl font-black ${
-              turn.isCorrect ? 'text-green-400' : 'text-red-400'
+              advanced > 0 ? 'text-green-400' : 'text-red-400'
             }`}
           >
-            {turn.isCorrect
-              ? `✓ +${turn.selectedDifficulty} CASE${turn.selectedDifficulty > 1 ? 'S' : ''}`
+            {advanced > 0
+              ? `✓ +${advanced} CASE${advanced > 1 ? 'S' : ''}`
               : '✗ DOMMAGE'}
           </motion.div>
           <QuestionCard
@@ -201,6 +220,7 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
           )}
         </div>
       );
+    }
 
     case 'turn_complete':
       return (

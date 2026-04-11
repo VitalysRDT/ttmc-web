@@ -115,6 +115,15 @@ export async function submitAnswer(
   );
 }
 
+export async function submitIntrepideAnswer(
+  roomId: string,
+  subItemAnswers: Record<string, boolean>,
+): Promise<GameRoom | null> {
+  return parseRoomResponse(
+    await post(`/api/rooms/${roomId}/turn/answer`, { subItemAnswers }),
+  );
+}
+
 export async function nextTurnAction(roomId: string): Promise<GameRoom | null> {
   return parseRoomResponse(await post(`/api/rooms/${roomId}/turn/next`));
 }

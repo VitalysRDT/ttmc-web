@@ -263,7 +263,7 @@ export async function revealAnswer(roomId: string, playerId: string): Promise<vo
 export async function submitAnswer(
   roomId: string,
   playerId: string,
-  isCorrect: boolean,
+  payload: { isCorrect: boolean } | { subItemAnswers: Record<string, boolean> },
 ): Promise<void> {
   const room = await loadRoomOrThrow(roomId);
   const state = room.gameState;
@@ -276,12 +276,36 @@ export async function submitAnswer(
     throw new GameError('Phase incorrecte');
   }
   const turn = state.currentTurn;
-  const spaces = turn.question.kind === 'standard' ? turn.selectedDifficulty : 0;
+
+  // Calcul du scoring selon le type de carte
+  let spaces: number;
+  let isCorrect: boolean;
+  let givenAnswer: string;
+  let subItemAnswers: Record<string, boolean> | undefined;
+
+  if (turn.question.kind === 'intrepide') {
+    if (!('subItemAnswers' in payload)) {
+      throw new GameError('Réponses par lettre manquantes pour une carte Intrépide', 400);
+    }
+    subItemAnswers = payload.subItemAnswers;
+    const total = Object.keys(subItemAnswers).length;
+    spaces = Object.values(subItemAnswers).filter(Boolean).length;
+    isCorrect = spaces > 0;
+    givenAnswer = `${spaces}/${total}`;
+  } else {
+    if (!('isCorrect' in payload)) {
+      throw new GameError('Réponse isCorrect manquante', 400);
+    }
+    isCorrect = payload.isCorrect;
+    spaces = turn.question.kind === 'standard' ? turn.selectedDifficulty : 0;
+    givenAnswer = isCorrect ? '✓' : '✗';
+  }
 
   const updatedTurn: GameTurn = {
     ...turn,
-    givenAnswer: isCorrect ? '✓' : '✗',
+    givenAnswer,
     isCorrect,
+    subItemAnswers,
     completedAt: new Date(),
     timeSpent: turn.startedAt
       ? Math.max(0, Math.round((Date.now() - turn.startedAt.getTime()) / 1000))
