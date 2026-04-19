@@ -444,14 +444,22 @@ export async function submitAnswer(
     currentPhase: 'revealing_answer',
   };
 
-  // Scoring spécial : question tirée via un modifier (NIB / AMBITION).
-  // - AMBITION raté : recule de `selectedDifficulty` cases.
-  // - NIB raté     : le joueur perd la partie → winnerId attribué au joueur
-  //                 le plus avancé restant (ordre initial à égalité).
-  // Bonne réponse : comportement standard (+N cases). Le modifier est vidé
-  // dans tous les cas à la fin du mini-tour.
-  const pending = state.pendingModifier;
-  if (pending) {
+  // Question finale : le joueur est sur la case 50 et tente la victoire.
+  // - Trouvé   → winnerId = playerId, partie terminée.
+  // - Raté     → reste sur la case 50, aucune pénalité. Il retentera une
+  //              question finale à son prochain tour (tour par tour).
+  if (turn.question.kind === 'final') {
+    if (isCorrect) {
+      updated = { ...updated, winnerId: playerId, isFinalQuestion: true };
+    }
+    // Raté : rien à faire, pas de mouvement, pas de recul.
+  } else if (state.pendingModifier) {
+    // Scoring spécial : question tirée via un modifier (NIB / AMBITION).
+    // - AMBITION raté : recule de `selectedDifficulty` cases.
+    // - NIB raté     : le joueur perd la partie → winnerId attribué au joueur
+    //                 le plus avancé restant (ordre initial à égalité).
+    // Bonne réponse : comportement standard (+N cases, clampé à la case 50).
+    const pending = state.pendingModifier;
     if (!isCorrect && turn.question.kind === 'standard') {
       if (pending.kind === 'ambition') {
         updated = movePlayer(updated, playerId, -turn.selectedDifficulty);
@@ -471,26 +479,15 @@ export async function submitAnswer(
       }
     } else if (isCorrect && spaces > 0) {
       updated = movePlayer(updated, playerId, spaces);
-      if (hasPlayerReachedEnd(updated, playerId)) {
-        if (!updated.isFinalQuestion) {
-          updated = { ...updated, isFinalQuestion: true };
-        } else {
-          updated = { ...updated, winnerId: playerId };
-        }
-      }
     }
     // pendingModifier reste set durant revealing_answer pour que l'UI
     // affiche « -N CASES (recul) » ou « 💀 » selon le kind. Il sera nettoyé
     // par `nextTurn`.
   } else if (isCorrect && spaces > 0) {
+    // Flow standard : avance du nombre de cases mérité. Si on atteint ou
+    // dépasse la case 50, movePlayer clampe à 50 — le joueur jouera une
+    // question finale à son prochain tour.
     updated = movePlayer(updated, playerId, spaces);
-    if (hasPlayerReachedEnd(updated, playerId)) {
-      if (!updated.isFinalQuestion) {
-        updated = { ...updated, isFinalQuestion: true };
-      } else {
-        updated = { ...updated, winnerId: playerId };
-      }
-    }
   }
   updated = { ...updated, turnHistory: [...state.turnHistory, updatedTurn] };
 

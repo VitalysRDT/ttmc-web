@@ -23,12 +23,18 @@ export function isGameOver(state: GameState): boolean {
 }
 
 /**
- * Déplace un joueur de `spaces` cases. Clampe entre 0 et 51 comme le code Dart d'origine,
- * et incrémente le score de la même quantité.
+ * Déplace un joueur de `spaces` cases. Clampe entre 0 et la case finale
+ * (`winningPosition = 50`). Si le mouvement dépasse la fin, le joueur reste
+ * sur la case 50 et doit répondre à une question finale pour gagner. Le
+ * score cumule la valeur brute de la question (pas clampée) pour refléter
+ * la difficulté totale résolue sur la partie.
  */
 export function movePlayer(state: GameState, playerId: string, spaces: number): GameState {
   const currentPosition = getPlayerPosition(state, playerId);
-  const newPosition = Math.max(0, Math.min(51, currentPosition + spaces));
+  const newPosition = Math.max(
+    0,
+    Math.min(GAME_CONSTANTS.winningPosition, currentPosition + spaces),
+  );
   const currentScore = getPlayerScore(state, playerId);
   return {
     ...state,

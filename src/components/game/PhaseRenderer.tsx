@@ -230,9 +230,19 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
         intrepideCorrect ?? (turn.question.kind === 'standard' ? turn.selectedDifficulty : 0);
       const pendingMod = state.pendingModifier;
       const isModifierMiniTurn = pendingMod !== null && turn.question.kind === 'standard';
+      const isFinalKind = turn.question.kind === 'final';
       let headlineLabel: string;
       let headlineColor: string;
-      if (isIntrepideInstruction) {
+      if (isFinalKind) {
+        // Question finale : gagner ou retenter au prochain tour.
+        if (turn.isCorrect) {
+          headlineLabel = '🏆 VICTOIRE';
+          headlineColor = 'text-[var(--color-primary)]';
+        } else {
+          headlineLabel = '⏳ ENCORE UN ESSAI';
+          headlineColor = 'text-yellow-300';
+        }
+      } else if (isIntrepideInstruction) {
         headlineLabel = '✓ CARTE APPLIQUÉE';
         headlineColor = 'text-[var(--color-ttmc-intrepide)]';
       } else if (isModifierMiniTurn && !turn.isCorrect) {

@@ -26,6 +26,7 @@ function makeState(overrides: Partial<GameState> = {}): GameState {
     remainingTime: 0,
     debuterAnswers: {},
     firstCorrectDebuterId: null,
+    pendingModifier: null,
     ...overrides,
   };
 }
@@ -46,10 +47,19 @@ describe('game-logic', () => {
       expect(getPlayerScore(next, 'p1')).toBe(3);
     });
 
-    it('clampe à 51 et ne dépasse pas', () => {
+    it('clampe à la case finale (50) et ne dépasse pas', () => {
       const state = makeState({ playerPositions: { p1: 49 } });
       const next = movePlayer(state, 'p1', 10);
-      expect(getPlayerPosition(next, 'p1')).toBe(51);
+      expect(getPlayerPosition(next, 'p1')).toBe(50);
+    });
+
+    it('reste sur la case 50 même avec un gros gain', () => {
+      const state = makeState({ playerPositions: { p1: 50 } });
+      const next = movePlayer(state, 'p1', 7);
+      expect(getPlayerPosition(next, 'p1')).toBe(50);
+      // Le score cumule quand même : permet de suivre le total des bonnes
+      // réponses. La position, elle, est clampée.
+      expect(getPlayerScore(next, 'p1')).toBe(7);
     });
 
     it('ne descend pas en dessous de 0', () => {
