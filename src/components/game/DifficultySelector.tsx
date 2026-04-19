@@ -89,16 +89,23 @@ export function DifficultySelector({
       <hr className="rule-thick" style={{ margin: '14px 0 22px' }} />
 
       {/* THÈME en hero — c'est ce sur quoi on mise */}
-      <div className="kicker kicker-ink">Sujet de la mise</div>
+      <div
+        className="kicker kicker-ink"
+        style={{ marginBottom: 4 }}
+      >
+        Sujet de la mise
+      </div>
       <h2
         className="font-serif italic"
         style={{
-          margin: '6px 0 8px',
+          margin: '0 0 10px',
           fontWeight: 500,
-          fontSize: 'clamp(48px, 7vw, 88px)',
-          lineHeight: 0.95,
-          letterSpacing: '-0.02em',
+          fontSize: 'clamp(72px, 11vw, 160px)',
+          lineHeight: 0.92,
+          letterSpacing: '-0.03em',
           color: `var(--color-cat-${question.category})`,
+          wordBreak: 'break-word',
+          hyphens: 'auto',
         }}
       >
         {question.theme}
@@ -106,11 +113,12 @@ export function DifficultySelector({
       <div
         className="font-mono"
         style={{
-          fontSize: 12,
-          letterSpacing: '0.24em',
-          color: 'var(--color-ink-3)',
+          fontSize: 13,
+          letterSpacing: '0.26em',
+          color: 'var(--color-ink-2)',
           textTransform: 'uppercase',
-          marginBottom: 28,
+          fontWeight: 700,
+          marginBottom: 32,
         }}
       >
         ↘ Tu mises combien sur ce thème&nbsp;?
