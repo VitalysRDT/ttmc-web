@@ -66,6 +66,16 @@ export const IntrepideSubQuestionSchema = z.object({
 });
 export type IntrepideSubQuestion = z.infer<typeof IntrepideSubQuestionSchema>;
 
+/**
+ * Variantes logiques d'une carte Intrépide.
+ * - `quiz`   : liste de sous-questions A/B/C… à valider une par une (+1 case / correct).
+ *              Inclut le cas « free_list » (énumération libre) où `sub.question` est vide.
+ * - `modifier` : règle imposée pour le tour (NIB, AMBITION). Pas de scoring.
+ * - `action` : action physique entre joueurs (AVERELL). Pas de scoring.
+ */
+export const IntrepideVariantSchema = z.enum(['quiz', 'modifier', 'action']);
+export type IntrepideVariant = z.infer<typeof IntrepideVariantSchema>;
+
 /** Question Intrépide (nombre variable de sous-questions indexées par lettre). */
 export const IntrepideQuestionSchema = z.object({
   kind: z.literal('intrepide'),
@@ -73,7 +83,9 @@ export const IntrepideQuestionSchema = z.object({
   category: z.literal('intrepide'),
   theme: z.string(),
   type: z.string(),
+  variant: IntrepideVariantSchema.default('quiz'),
   instruction: z.string().optional(),
+  consequence: z.string().optional(),
   subQuestions: z.array(IntrepideSubQuestionSchema),
   timeLimit: z.number().int().positive().default(GAME_CONSTANTS.defaultTimeLimit),
   sourceHash: z.string().optional(),

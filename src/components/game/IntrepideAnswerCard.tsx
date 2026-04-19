@@ -123,7 +123,9 @@ export function IntrepideAnswerCard({
                   {sub.letter}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white text-sm leading-snug">{sub.question}</p>
+                  {sub.question && (
+                    <p className="text-white text-sm leading-snug">{sub.question}</p>
+                  )}
                   <AnimatePresence initial={false}>
                     {(isLocked || isActive) && (
                       <motion.p

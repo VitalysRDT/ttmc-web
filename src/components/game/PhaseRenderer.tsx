@@ -9,6 +9,7 @@ import { DifficultySelector } from './DifficultySelector';
 import { HonorButtons } from './HonorButtons';
 import { CategoryBadge } from './CategoryBadge';
 import { IntrepideAnswerCard } from './IntrepideAnswerCard';
+import { IntrepideInstructionCard } from './IntrepideInstructionCard';
 import { useGameActions } from '@/lib/hooks/useGameActions';
 import { SQUARE_CATEGORIES } from '@/lib/game/board-positions';
 import type { GameRoom } from '@/lib/schemas/game-room.schema';
@@ -152,14 +153,25 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
     case 'answering':
       if (!turn) return null;
       if (turn.question.kind === 'intrepide') {
+        const isInstructionVariant =
+          turn.question.variant === 'modifier' || turn.question.variant === 'action';
         return (
           <div className="flex flex-col items-center gap-6 p-6">
-            <IntrepideAnswerCard
-              question={turn.question}
-              roomId={room.id}
-              isCurrentPlayer={isCurrentPlayer}
-              currentPlayerName={currentPlayerName}
-            />
+            {isInstructionVariant ? (
+              <IntrepideInstructionCard
+                question={turn.question}
+                roomId={room.id}
+                isCurrentPlayer={isCurrentPlayer}
+                currentPlayerName={currentPlayerName}
+              />
+            ) : (
+              <IntrepideAnswerCard
+                question={turn.question}
+                roomId={room.id}
+                isCurrentPlayer={isCurrentPlayer}
+                currentPlayerName={currentPlayerName}
+              />
+            )}
           </div>
         );
       }
@@ -193,24 +205,33 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
 
     case 'revealing_answer': {
       if (!turn) return null;
+      const isIntrepideInstruction =
+        turn.question.kind === 'intrepide' &&
+        (turn.question.variant === 'modifier' || turn.question.variant === 'action');
       const intrepideCorrect =
         turn.question.kind === 'intrepide' && turn.subItemAnswers
           ? Object.values(turn.subItemAnswers).filter(Boolean).length
           : null;
       const advanced =
         intrepideCorrect ?? (turn.question.kind === 'standard' ? turn.selectedDifficulty : 0);
+      const headlineLabel = isIntrepideInstruction
+        ? '✓ CARTE APPLIQUÉE'
+        : advanced > 0
+          ? `✓ +${advanced} CASE${advanced > 1 ? 'S' : ''}`
+          : '✗ DOMMAGE';
+      const headlineColor = isIntrepideInstruction
+        ? 'text-[var(--color-ttmc-intrepide)]'
+        : advanced > 0
+          ? 'text-green-400'
+          : 'text-red-400';
       return (
         <div className="flex flex-col items-center gap-6 p-6">
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className={`text-4xl font-black ${
-              advanced > 0 ? 'text-green-400' : 'text-red-400'
-            }`}
+            className={`text-4xl font-black ${headlineColor}`}
           >
-            {advanced > 0
-              ? `✓ +${advanced} CASE${advanced > 1 ? 'S' : ''}`
-              : '✗ DOMMAGE'}
+            {headlineLabel}
           </motion.div>
           <QuestionCard
             question={turn.question}

@@ -10,6 +10,17 @@ interface Props {
 }
 
 export function IntrepideQuestionCard({ question, showAnswer }: Props) {
+  const isInstruction =
+    question.variant === 'modifier' || question.variant === 'action';
+  const badgeLabel =
+    question.variant === 'action'
+      ? '⚡ Action'
+      : question.variant === 'modifier'
+        ? '📜 Règle'
+        : '🔥 Défi';
+  const sectionLabel =
+    question.variant === 'action' ? 'Détails' : 'En cas de mauvaise réponse';
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.98 }}
@@ -21,7 +32,7 @@ export function IntrepideQuestionCard({ question, showAnswer }: Props) {
       <div className="flex items-center justify-between">
         <CategoryBadge category="intrepide" />
         <div className="text-[10px] tracking-[0.3em] text-[var(--color-ttmc-intrepide)] uppercase font-bold">
-          🔥 Défi
+          {badgeLabel}
         </div>
       </div>
 
@@ -29,38 +40,62 @@ export function IntrepideQuestionCard({ question, showAnswer }: Props) {
         <div className="text-[10px] tracking-[0.3em] text-white/40 uppercase mb-2">Thème</div>
         <div className="text-sm tracking-[0.1em] font-bold text-[var(--color-ttmc-intrepide)]">
           {question.theme}
+          {question.type && isInstruction && ` — ${question.type}`}
         </div>
       </div>
 
       {question.instruction && (
-        <p className="text-white/80 italic leading-relaxed">{question.instruction}</p>
+        <p
+          className={`whitespace-pre-line leading-relaxed ${
+            isInstruction ? 'text-base text-white' : 'text-white/80 italic'
+          }`}
+        >
+          {question.instruction}
+        </p>
       )}
 
-      <ul className="flex flex-col gap-3">
-        {question.subQuestions.map((sub, i) => (
-          <li key={i} className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-            <div className="flex items-start gap-3">
-              <span
-                className="flex size-9 shrink-0 items-center justify-center rounded-full font-black text-white"
-                style={{
-                  background: 'linear-gradient(145deg, #ef5350, #c62828)',
-                  boxShadow: '0 4px 12px rgba(239,83,80,0.4), inset 0 1px 0 rgba(255,255,255,0.3)',
-                }}
-              >
-                {sub.letter}
-              </span>
-              <div className="flex-1">
-                <p className="text-white">{sub.question}</p>
-                {showAnswer && (
-                  <p className="mt-2 text-sm font-semibold text-[var(--color-primary)]">
-                    → {sub.answer}
-                  </p>
-                )}
+      {isInstruction && question.consequence && showAnswer && (
+        <div className="rounded-2xl border border-[var(--color-ttmc-intrepide)]/30 bg-[var(--color-ttmc-intrepide)]/5 p-5">
+          <div className="text-[10px] tracking-[0.3em] font-bold mb-2 uppercase text-[var(--color-ttmc-intrepide)]">
+            → {sectionLabel}
+          </div>
+          <p className="whitespace-pre-line text-sm text-white/85 italic leading-relaxed">
+            {question.consequence}
+          </p>
+        </div>
+      )}
+
+      {!isInstruction && question.subQuestions.length > 0 && (
+        <ul className="flex flex-col gap-3">
+          {question.subQuestions.map((sub, i) => (
+            <li
+              key={i}
+              className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm"
+            >
+              <div className="flex items-start gap-3">
+                <span
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full font-black text-white"
+                  style={{
+                    background: 'linear-gradient(145deg, #ef5350, #c62828)',
+                    boxShadow:
+                      '0 4px 12px rgba(239,83,80,0.4), inset 0 1px 0 rgba(255,255,255,0.3)',
+                  }}
+                >
+                  {sub.letter}
+                </span>
+                <div className="flex-1">
+                  {sub.question && <p className="text-white">{sub.question}</p>}
+                  {showAnswer && (
+                    <p className="mt-2 text-sm font-semibold text-[var(--color-primary)]">
+                      → {sub.answer}
+                    </p>
+                  )}
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      )}
     </motion.div>
   );
 }
