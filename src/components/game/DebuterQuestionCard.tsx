@@ -12,32 +12,70 @@ interface Props {
 export function DebuterQuestionCard({ question, showAnswer }: Props) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="glass-card-strong relative flex flex-col gap-6 rounded-3xl p-8 w-full max-w-xl"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className="paper-card p-8 w-full max-w-xl"
     >
-      <div className="flex items-center justify-between">
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: 12,
+        }}
+      >
         <CategoryBadge category="debuter" />
-        <div className="text-[10px] tracking-[0.2em] text-white/40 uppercase">
+        <span
+          className="font-mono"
+          style={{
+            fontSize: 11,
+            letterSpacing: '0.18em',
+            color: 'var(--color-ink-3)',
+            textTransform: 'uppercase',
+          }}
+        >
           Qui commence ?
-        </div>
+        </span>
       </div>
+      <hr className="rule-thick" />
 
-      <p className="text-xl leading-relaxed text-white font-light">{question.textePrincipal}</p>
+      <p
+        className="font-serif"
+        style={{
+          margin: '22px 0 0',
+          fontSize: 28,
+          lineHeight: 1.3,
+          color: 'var(--color-ink)',
+          letterSpacing: '-0.01em',
+        }}
+      >
+        {question.textePrincipal}
+      </p>
 
       {showAnswer && question.texteSecondaire && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          className="rounded-2xl border border-[var(--color-primary)]/40 bg-[var(--color-primary)]/5 p-5"
+        <div
+          className="fade-up"
+          style={{
+            marginTop: 22,
+            padding: 20,
+            background: 'var(--color-accent-soft)',
+            border: '1.5px solid var(--color-accent)',
+          }}
         >
-          <div className="text-[10px] tracking-[0.3em] font-bold mb-2 uppercase text-[var(--color-primary)]">
-            → En cas d'égalité
-          </div>
-          <p className="text-base text-white/90 italic">{question.texteSecondaire}</p>
-        </motion.div>
+          <div className="kicker kicker-accent">→ En cas d&apos;égalité</div>
+          <p
+            className="font-serif italic"
+            style={{
+              marginTop: 6,
+              fontSize: 20,
+              lineHeight: 1.4,
+              color: 'var(--color-ink)',
+            }}
+          >
+            {question.texteSecondaire}
+          </p>
+        </div>
       )}
     </motion.div>
   );

@@ -1,38 +1,87 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0a0612;
-  --color-foreground: #ffffff;
-  --color-surface: #15101f;
-  --color-surface-elevated: #1e1729;
-  --color-surface-glass: rgba(255, 255, 255, 0.04);
+  /* Paper + ink editorial palette */
+  --color-paper: oklch(0.97 0.008 85);
+  --color-paper-2: oklch(0.94 0.010 80);
+  --color-paper-3: oklch(0.90 0.012 78);
+  --color-ink: oklch(0.18 0.015 60);
+  --color-ink-2: oklch(0.32 0.012 60);
+  --color-ink-3: oklch(0.55 0.010 60);
+  --color-ink-4: oklch(0.78 0.010 70);
+  --color-rule: oklch(0.85 0.012 75);
 
-  --color-primary: #ffd700;
-  --color-primary-dark: #c9a700;
-  --color-secondary: #9c27b0;
+  /* One saturated accent — burnt vermillion */
+  --color-accent: oklch(0.62 0.19 32);
+  --color-accent-ink: oklch(0.42 0.16 32);
+  --color-accent-soft: oklch(0.92 0.05 35);
 
-  --color-ttmc-mature: #4fc3f7;
-  --color-ttmc-improbable: #c27bdf;
-  --color-ttmc-plaisir: #ff9800;
-  --color-ttmc-scolaire: #66bb6a;
-  --color-ttmc-intrepide: #ef5350;
-  --color-ttmc-final: #ffd700;
+  /* Category tonal marks */
+  --color-cat-improbable: oklch(0.58 0.12 310);
+  --color-cat-plaisir: oklch(0.66 0.12 55);
+  --color-cat-scolaire: oklch(0.58 0.12 155);
+  --color-cat-mature: oklch(0.58 0.12 235);
+  --color-cat-intrepide: oklch(0.58 0.14 18);
+  --color-cat-final: oklch(0.55 0.14 85);
+  --color-cat-debuter: oklch(0.55 0.02 60);
 
-  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  /* Legacy aliases (existing code refers to these) */
+  --color-background: var(--color-paper);
+  --color-foreground: var(--color-ink);
+  --color-surface: var(--color-paper);
+  --color-surface-elevated: var(--color-paper);
+  --color-surface-glass: var(--color-paper);
+  --color-primary: var(--color-accent);
+  --color-primary-dark: var(--color-accent-ink);
+  --color-secondary: var(--color-cat-improbable);
+
+  --color-ttmc-mature: var(--color-cat-mature);
+  --color-ttmc-improbable: var(--color-cat-improbable);
+  --color-ttmc-plaisir: var(--color-cat-plaisir);
+  --color-ttmc-scolaire: var(--color-cat-scolaire);
+  --color-ttmc-intrepide: var(--color-cat-intrepide);
+  --color-ttmc-final: var(--color-cat-final);
+
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-serif: var(--font-fraunces), 'Times New Roman', serif;
 }
 
 html,
 body {
-  background: var(--color-background);
-  color: var(--color-foreground);
+  background: var(--color-paper);
+  color: var(--color-ink);
   min-height: 100dvh;
 }
 
 body {
   font-family: var(--font-sans);
+  font-size: 15px;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  background-image:
+    radial-gradient(circle at 20% 10%, oklch(0.99 0.01 85) 0%, transparent 50%),
+    radial-gradient(circle at 90% 90%, oklch(0.94 0.014 70) 0%, transparent 55%);
+  background-attachment: fixed;
+}
+
+/* Paper grain */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 25% 30%, oklch(0.85 0.02 60 / 0.04) 0.5px, transparent 1px),
+    radial-gradient(circle at 75% 60%, oklch(0.85 0.02 60 / 0.03) 0.5px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+main {
+  position: relative;
+  z-index: 1;
 }
 
 /* Scrollbar */
@@ -44,102 +93,252 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: oklch(0.85 0.012 75);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: oklch(0.55 0.010 60);
 }
 
-/* Fond TV show : ambiances violettes + or + blobs lumineux */
-.ttmc-bg {
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(156, 39, 176, 0.4), transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(255, 215, 0, 0.15), transparent 70%),
-    radial-gradient(ellipse 60% 50% at 20% 100%, rgba(79, 195, 247, 0.1), transparent 70%),
-    var(--color-background);
-  position: relative;
+/* --- Typography utilities --- */
+
+.font-serif {
+  font-family: var(--font-serif);
 }
 
-.ttmc-bg::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 25% 30%, rgba(255, 255, 255, 0.02) 0.5px, transparent 1px),
-    radial-gradient(circle at 75% 60%, rgba(255, 255, 255, 0.015) 0.5px, transparent 1px);
-  background-size: 40px 40px, 80px 80px;
-  pointer-events: none;
-  z-index: 0;
+.font-mono {
+  font-family: var(--font-mono);
 }
 
-/* Utilitaires glassmorphism */
-.glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-ink-3);
+}
+
+.kicker-ink {
+  color: var(--color-ink);
+}
+
+.kicker-accent {
+  color: var(--color-accent);
+}
+
+/* --- Paper cards --- */
+
+.paper-card {
+  background: var(--color-paper);
+  border: 1px solid var(--color-rule);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 1px 0 oklch(1 0 0 / 0.6) inset,
+    0 2px 0 oklch(0.88 0.012 75),
+    0 24px 48px -24px oklch(0.15 0.02 60 / 0.25);
+  border-radius: 2px;
 }
 
+.paper-card-raised {
+  background: var(--color-paper);
+  border: 1px solid var(--color-ink);
+  box-shadow:
+    0 1px 0 oklch(1 0 0 / 0.7) inset,
+    4px 4px 0 var(--color-ink);
+  border-radius: 2px;
+}
+
+/* Legacy glass-card aliases redirect to paper-card so untouched code keeps working */
+.glass-card,
 .glass-card-strong {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(24px) saturate(200%);
-  -webkit-backdrop-filter: blur(24px) saturate(200%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--color-paper);
+  border: 1px solid var(--color-rule);
   box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 1px 0 oklch(1 0 0 / 0.6) inset,
+    0 2px 0 oklch(0.88 0.012 75),
+    0 24px 48px -24px oklch(0.15 0.02 60 / 0.2);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
-/* Glow doré pour les éléments primaires */
-.glow-primary {
-  box-shadow:
-    0 0 20px rgba(255, 215, 0, 0.3),
-    0 0 40px rgba(255, 215, 0, 0.15),
-    0 4px 16px rgba(0, 0, 0, 0.4);
-}
-
+.glow-primary,
 .glow-primary-strong {
-  box-shadow:
-    0 0 30px rgba(255, 215, 0, 0.5),
-    0 0 60px rgba(255, 215, 0, 0.25),
-    0 8px 24px rgba(0, 0, 0, 0.5);
+  box-shadow: 4px 4px 0 var(--color-ink);
 }
 
-/* Text glow */
 .text-glow {
-  text-shadow:
-    0 0 20px rgba(255, 215, 0, 0.4),
-    0 0 40px rgba(255, 215, 0, 0.2);
+  text-shadow: none;
 }
 
-/* Animation gradient shimmer pour les boutons primaires */
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+.ttmc-bg {
+  background: transparent;
 }
 
-.shimmer {
-  background: linear-gradient(
-    110deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.15) 50%,
-    transparent 70%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 3s linear infinite;
+/* --- Buttons (pill style) --- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 22px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--color-ink);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  border-radius: 999px;
+  transition:
+    transform 0.12s ease,
+    background 0.12s ease,
+    color 0.12s ease,
+    box-shadow 0.12s ease;
+  user-select: none;
 }
 
-/* Pulse halo autour des éléments actifs */
-@keyframes pulse-halo {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.6);
+.btn:hover:not([disabled]) {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.btn-primary:hover:not([disabled]) {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.btn-accent {
+  background: var(--color-accent);
+  color: var(--color-paper);
+  border-color: var(--color-accent);
+}
+
+.btn-accent:hover:not([disabled]) {
+  background: var(--color-accent-ink);
+  border-color: var(--color-accent-ink);
+  color: var(--color-paper);
+}
+
+.btn-ghost {
+  border-color: var(--color-rule);
+  color: var(--color-ink-3);
+}
+
+.btn-ghost:hover:not([disabled]) {
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+}
+
+.btn[disabled] {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* --- Horizontal rules --- */
+
+.rule {
+  height: 1px;
+  background: var(--color-rule);
+  border: 0;
+}
+
+.rule-thick {
+  height: 2px;
+  background: var(--color-ink);
+  border: 0;
+}
+
+/* --- Editorial input --- */
+
+.editorial-input {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 2px solid var(--color-ink);
+  background: transparent;
+  color: var(--color-ink);
+  width: 100%;
+  outline: none;
+  letter-spacing: -0.01em;
+}
+
+.editorial-input::placeholder {
+  color: var(--color-ink-4);
+  font-style: italic;
+}
+
+.editorial-input:focus {
+  border-bottom-color: var(--color-accent);
+}
+
+/* --- Animations --- */
+
+@keyframes nudge {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
+.nudge {
+  animation: nudge 0.4s ease;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fadeUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes tick-pulse {
+  0%,
+  100% {
+    opacity: 1;
   }
   50% {
-    box-shadow: 0 0 0 12px rgba(255, 215, 0, 0);
+    opacity: 0.3;
+  }
+}
+
+.tick-pulse {
+  animation: tick-pulse 1s ease-in-out infinite;
+}
+
+/* Pulse halo kept for legacy callers but toned down to ink */
+@keyframes pulse-halo {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 oklch(0.62 0.19 32 / 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 12px oklch(0.62 0.19 32 / 0);
   }
 }
 
@@ -147,8 +346,7 @@ body {
   animation: pulse-halo 2s ease-out infinite;
 }
 
-/* Disposition sticky pour les contenus principaux au-dessus du fond */
-main {
-  position: relative;
-  z-index: 1;
+/* Shimmer kept as no-op so any stale usage doesn't fail */
+.shimmer {
+  background: transparent;
 }

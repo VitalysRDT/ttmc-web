@@ -1,42 +1,96 @@
 'use client';
 
-import { Check, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface Props {
   onCorrect: () => void;
   onIncorrect: () => void;
   disabled?: boolean;
+  difficulty?: number;
 }
 
-export function HonorButtons({ onCorrect, onIncorrect, disabled }: Props) {
+export function HonorButtons({ onCorrect, onIncorrect, disabled, difficulty }: Props) {
   return (
-    <div className="flex gap-4 w-full max-w-md">
+    <div className="flex flex-col gap-3 w-full max-w-md">
       <motion.button
-        whileTap={{ scale: 0.95 }}
-        whileHover={{ y: -2 }}
-        onClick={onIncorrect}
-        disabled={disabled}
-        className="group flex-1 h-20 rounded-3xl border-2 border-red-500/40 bg-gradient-to-b from-red-500/15 to-red-500/5 text-red-400 font-black text-lg tracking-[0.15em] transition-all hover:border-red-500 hover:from-red-500/25 hover:to-red-500/10 hover:text-red-300 disabled:opacity-50 backdrop-blur-xl"
-        style={{ boxShadow: '0 10px 30px rgba(239,68,68,0.15)' }}
-      >
-        <span className="flex items-center justify-center gap-3">
-          <X size={28} strokeWidth={3} className="transition-transform group-hover:rotate-90" />
-          RATÉ
-        </span>
-      </motion.button>
-      <motion.button
-        whileTap={{ scale: 0.95 }}
-        whileHover={{ y: -2 }}
+        whileTap={{ scale: 0.98 }}
         onClick={onCorrect}
         disabled={disabled}
-        className="group flex-1 h-20 rounded-3xl border-2 border-emerald-500/40 bg-gradient-to-b from-emerald-500/15 to-emerald-500/5 text-emerald-400 font-black text-lg tracking-[0.15em] transition-all hover:border-emerald-500 hover:from-emerald-500/25 hover:to-emerald-500/10 hover:text-emerald-300 disabled:opacity-50 backdrop-blur-xl"
-        style={{ boxShadow: '0 10px 30px rgba(16,185,129,0.15)' }}
+        className="paper-card-raised"
+        style={{
+          padding: '22px 26px',
+          textAlign: 'left',
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          opacity: disabled ? 0.5 : 1,
+        }}
       >
-        <span className="flex items-center justify-center gap-3">
-          <Check size={28} strokeWidth={3} className="transition-transform group-hover:scale-125" />
-          TROUVÉ
-        </span>
+        <div>
+          <div className="kicker">Réponse A</div>
+          <div
+            className="font-serif italic"
+            style={{ fontSize: 38, fontWeight: 500, marginTop: 2 }}
+          >
+            Oui, juste.
+          </div>
+        </div>
+        <div
+          className="font-mono"
+          style={{
+            padding: '6px 12px',
+            background: 'var(--color-ink)',
+            color: 'var(--color-paper)',
+            fontSize: 11,
+            letterSpacing: '0.16em',
+          }}
+        >
+          {difficulty ? `+${difficulty} ${difficulty > 1 ? 'CASES' : 'CASE'}` : '✓ JUSTE'}
+        </div>
+      </motion.button>
+
+      <motion.button
+        whileTap={{ scale: 0.98 }}
+        onClick={onIncorrect}
+        disabled={disabled}
+        style={{
+          padding: '20px 26px',
+          textAlign: 'left',
+          background: 'transparent',
+          border: '1.5px solid var(--color-rule)',
+          borderRadius: 2,
+          cursor: disabled ? 'not-allowed' : 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          opacity: disabled ? 0.5 : 1,
+        }}
+      >
+        <div>
+          <div className="kicker">Réponse B</div>
+          <div
+            className="font-serif italic"
+            style={{
+              fontSize: 32,
+              fontWeight: 500,
+              marginTop: 2,
+              color: 'var(--color-ink-2)',
+            }}
+          >
+            Non, tant pis.
+          </div>
+        </div>
+        <div
+          className="font-mono"
+          style={{
+            fontSize: 11,
+            letterSpacing: '0.14em',
+            color: 'var(--color-ink-3)',
+          }}
+        >
+          ±0 CASE
+        </div>
       </motion.button>
     </div>
   );

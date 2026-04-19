@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, X, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { CategoryBadge } from './CategoryBadge';
 import { useGameActions } from '@/lib/hooks/useGameActions';
@@ -15,14 +14,6 @@ interface Props {
   currentPlayerName: string;
 }
 
-/**
- * Carte Intrépide en phase `answering`, révélation progressive lettre par lettre.
- *
- * UX : seul le sous-item courant expose sa réponse + boutons RATÉ/TROUVÉ.
- * Les items suivants n'affichent que l'énoncé (réponse masquée). Les items
- * validés sont figés (vert/rouge). Quand toutes les lettres ont été marquées,
- * le bouton VALIDER devient actif et envoie la map complète au serveur.
- */
 export function IntrepideAnswerCard({
   question,
   roomId,
@@ -61,47 +52,106 @@ export function IntrepideAnswerCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="glass-card-strong relative flex flex-col gap-6 rounded-3xl border-2 border-[var(--color-ttmc-intrepide)]/40 p-6 w-full max-w-xl"
-      style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(239,83,80,0.2)' }}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className="paper-card w-full max-w-xl p-8"
+      style={{ borderColor: 'var(--color-cat-intrepide)' }}
     >
-      <div className="flex items-center justify-between">
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: 12,
+          flexWrap: 'wrap',
+          gap: 8,
+        }}
+      >
         <CategoryBadge category="intrepide" />
-        <div className="text-[10px] tracking-[0.3em] text-[var(--color-ttmc-intrepide)] uppercase font-bold">
+        <span
+          className="font-mono"
+          style={{
+            fontSize: 11,
+            letterSpacing: '0.22em',
+            color: 'var(--color-cat-intrepide)',
+            textTransform: 'uppercase',
+            fontWeight: 700,
+          }}
+        >
           🔥 Défi
-        </div>
+        </span>
       </div>
+      <hr className="rule-thick" />
 
-      <div>
-        <div className="text-[10px] tracking-[0.3em] text-white/40 uppercase mb-2">Thème</div>
-        <div className="text-sm tracking-[0.1em] font-bold text-[var(--color-ttmc-intrepide)]">
+      <div
+        style={{
+          marginTop: 18,
+          display: 'flex',
+          alignItems: 'baseline',
+          gap: 14,
+          flexWrap: 'wrap',
+        }}
+      >
+        <span className="kicker">Thème</span>
+        <span
+          className="font-serif italic"
+          style={{
+            fontSize: 22,
+            color: 'var(--color-cat-intrepide)',
+            fontWeight: 500,
+          }}
+        >
           {question.theme}
           {question.type && ` — ${question.type}`}
-        </div>
+        </span>
       </div>
 
       {question.instruction && (
-        <p className="text-sm text-white/80 italic leading-relaxed">{question.instruction}</p>
+        <p
+          className="font-serif italic"
+          style={{
+            margin: '18px 0 0',
+            fontSize: 18,
+            lineHeight: 1.4,
+            color: 'var(--color-ink-2)',
+            whiteSpace: 'pre-line',
+          }}
+        >
+          {question.instruction}
+        </p>
       )}
 
-      <ul className="flex flex-col gap-3">
+      <ul
+        style={{
+          marginTop: 22,
+          listStyle: 'none',
+          padding: 0,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 8,
+        }}
+      >
         {question.subQuestions.map((sub, index) => {
           const mark = answers[sub.letter];
           const isLocked = mark !== undefined;
           const isActive = index === currentIndex;
           const isMasked = index > currentIndex;
-          const isCorrectMark = mark === true;
-          const isWrongMark = mark === false;
+          const isCorrect = mark === true;
+          const isWrong = mark === false;
 
-          const borderClass = isCorrectMark
-            ? 'border-emerald-500/50 bg-emerald-500/10'
-            : isWrongMark
-              ? 'border-red-500/50 bg-red-500/10'
+          const borderColor = isCorrect
+            ? 'oklch(0.55 0.13 155)'
+            : isWrong
+              ? 'oklch(0.55 0.2 25)'
               : isActive
-                ? 'border-[var(--color-ttmc-intrepide)]/60 bg-[var(--color-ttmc-intrepide)]/10'
-                : 'border-white/10 bg-white/5';
+                ? 'var(--color-cat-intrepide)'
+                : 'var(--color-rule)';
+          const bg = isCorrect
+            ? 'oklch(0.92 0.05 155 / 0.4)'
+            : isWrong
+              ? 'oklch(0.92 0.06 25 / 0.35)'
+              : 'var(--color-paper)';
 
           return (
             <motion.li
@@ -109,22 +159,38 @@ export function IntrepideAnswerCard({
               layout
               animate={{ opacity: isMasked ? 0.55 : 1 }}
               transition={{ duration: 0.25 }}
-              className={`rounded-xl border p-4 backdrop-blur-sm transition-colors ${borderClass}`}
+              style={{
+                padding: '14px 16px',
+                border: `1.5px solid ${borderColor}`,
+                background: bg,
+              }}
             >
-              <div className="flex items-start gap-3">
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
                 <span
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full font-black text-white"
+                  className="font-serif"
                   style={{
-                    background: 'linear-gradient(145deg, #ef5350, #c62828)',
-                    boxShadow:
-                      '0 4px 12px rgba(239,83,80,0.4), inset 0 1px 0 rgba(255,255,255,0.3)',
+                    fontSize: 26,
+                    fontWeight: 500,
+                    color: 'var(--color-cat-intrepide)',
+                    minWidth: 28,
+                    textAlign: 'center',
                   }}
                 >
                   {sub.letter}
                 </span>
-                <div className="flex-1 min-w-0">
+                <div style={{ flex: 1, minWidth: 0 }}>
                   {sub.question && (
-                    <p className="text-white text-sm leading-snug">{sub.question}</p>
+                    <p
+                      className="font-serif"
+                      style={{
+                        margin: 0,
+                        fontSize: 17,
+                        lineHeight: 1.4,
+                        color: 'var(--color-ink)',
+                      }}
+                    >
+                      {sub.question}
+                    </p>
                   )}
                   <AnimatePresence initial={false}>
                     {(isLocked || isActive) && (
@@ -133,17 +199,31 @@ export function IntrepideAnswerCard({
                         initial={{ opacity: 0, height: 0, marginTop: 0 }}
                         animate={{ opacity: 1, height: 'auto', marginTop: 6 }}
                         exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-                        className="text-sm font-semibold text-[var(--color-primary)] overflow-hidden"
+                        transition={{ duration: 0.25 }}
+                        className="font-serif italic"
+                        style={{
+                          fontSize: 16,
+                          color: 'var(--color-accent)',
+                          fontWeight: 500,
+                          overflow: 'hidden',
+                        }}
                       >
                         → {sub.answer}
                       </motion.p>
                     )}
                   </AnimatePresence>
                   {isMasked && (
-                    <div className="mt-2 flex items-center gap-1.5 text-[10px] tracking-[0.2em] text-white/40 uppercase">
-                      <Lock size={10} strokeWidth={2.5} />
-                      Réponse masquée
+                    <div
+                      className="font-mono"
+                      style={{
+                        marginTop: 6,
+                        fontSize: 10,
+                        letterSpacing: '0.18em',
+                        color: 'var(--color-ink-4)',
+                        textTransform: 'uppercase',
+                      }}
+                    >
+                      🔒 Réponse masquée
                     </div>
                   )}
                 </div>
@@ -151,43 +231,45 @@ export function IntrepideAnswerCard({
 
               {isActive && (
                 <motion.div
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={{ delay: 0.1 }}
-                  className="mt-3 flex gap-2"
+                  style={{ display: 'flex', gap: 8, marginTop: 12 }}
                 >
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
+                  <button
                     onClick={() => handleMark(sub.letter, false)}
                     disabled={!isCurrentPlayer || submitting}
-                    className="flex-1 h-11 rounded-xl border-2 border-red-500/40 bg-red-500/5 font-black text-xs tracking-[0.15em] text-red-400 transition-all hover:border-red-500 hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="btn btn-ghost"
+                    style={{ flex: 1 }}
                   >
-                    <span className="flex items-center justify-center gap-2">
-                      <X size={16} strokeWidth={3} />
-                      RATÉ
-                    </span>
-                  </motion.button>
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
+                    ✗ RATÉ
+                  </button>
+                  <button
                     onClick={() => handleMark(sub.letter, true)}
                     disabled={!isCurrentPlayer || submitting}
-                    className="flex-1 h-11 rounded-xl border-2 border-emerald-500/40 bg-emerald-500/5 font-black text-xs tracking-[0.15em] text-emerald-400 transition-all hover:border-emerald-500 hover:bg-emerald-500/15 disabled:cursor-not-allowed disabled:opacity-40"
+                    className="btn btn-primary"
+                    style={{ flex: 1 }}
                   >
-                    <span className="flex items-center justify-center gap-2">
-                      <Check size={16} strokeWidth={3} />
-                      TROUVÉ
-                    </span>
-                  </motion.button>
+                    ✓ TROUVÉ
+                  </button>
                 </motion.div>
               )}
 
               {isLocked && (
                 <div
-                  className={`mt-2 text-[10px] tracking-[0.2em] font-bold uppercase ${
-                    isCorrectMark ? 'text-emerald-300' : 'text-red-300'
-                  }`}
+                  className="font-mono"
+                  style={{
+                    marginTop: 8,
+                    fontSize: 10,
+                    letterSpacing: '0.2em',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    color: isCorrect
+                      ? 'oklch(0.45 0.14 155)'
+                      : 'oklch(0.5 0.2 25)',
+                  }}
                 >
-                  {isCorrectMark ? '✓ Trouvé' : '✗ Raté'}
+                  {isCorrect ? '✓ Trouvé' : '✗ Raté'}
                 </div>
               )}
             </motion.li>
@@ -196,21 +278,46 @@ export function IntrepideAnswerCard({
       </ul>
 
       {isCurrentPlayer ? (
-        <div className="flex flex-col items-center gap-3">
-          <div className="text-xs tracking-[0.2em] text-white/60">
-            {answered}/{total} répondues — {correct} correcte{correct > 1 ? 's' : ''}
+        <div
+          style={{
+            marginTop: 22,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 10,
+          }}
+        >
+          <div
+            className="font-mono"
+            style={{
+              fontSize: 11,
+              letterSpacing: '0.18em',
+              color: 'var(--color-ink-3)',
+              textTransform: 'uppercase',
+            }}
+          >
+            {answered}/{total} répondues · {correct} correcte{correct > 1 ? 's' : ''}
           </div>
           <Button
+            variant="accent"
             size="lg"
             onClick={handleValidate}
             disabled={!allAnswered || submitting}
             loading={submitting}
           >
-            VALIDER (+{correct} CASE{correct > 1 ? 'S' : ''})
+            VALIDER · +{correct} CASE{correct > 1 ? 'S' : ''}
           </Button>
         </div>
       ) : (
-        <p className="text-center text-sm text-white/50 italic">
+        <p
+          className="font-serif italic"
+          style={{
+            marginTop: 22,
+            textAlign: 'center',
+            fontSize: 18,
+            color: 'var(--color-ink-3)',
+          }}
+        >
           {currentPlayerName} répond…
         </p>
       )}

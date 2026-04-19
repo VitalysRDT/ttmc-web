@@ -12,59 +12,164 @@ interface Props {
 export function FinalQuestionCard({ question, showAnswer }: Props) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="glass-card-strong relative flex flex-col gap-6 rounded-3xl border-2 border-[var(--color-ttmc-final)]/40 p-8 w-full max-w-xl"
-      style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(255,215,0,0.25)' }}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className="paper-card p-8 w-full max-w-xl"
+      style={{ borderColor: 'var(--color-accent)' }}
     >
-      <div className="flex items-center justify-between">
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: 12,
+        }}
+      >
         <CategoryBadge category="final" />
-        <div className="text-[10px] tracking-[0.3em] text-[var(--color-primary)] uppercase font-bold">
-          ⭐ Question finale
-        </div>
+        <span
+          className="font-mono"
+          style={{
+            fontSize: 11,
+            letterSpacing: '0.22em',
+            color: 'var(--color-accent)',
+            textTransform: 'uppercase',
+            fontWeight: 700,
+          }}
+        >
+          ⋆ Question finale ⋆
+        </span>
       </div>
+      <hr className="rule-thick" />
 
-      <div>
-        <div className="text-[10px] tracking-[0.3em] text-white/40 uppercase mb-2">Thème</div>
-        <div className="text-sm tracking-[0.1em] font-bold text-[var(--color-primary)]">
+      <div
+        style={{
+          marginTop: 18,
+          display: 'flex',
+          alignItems: 'baseline',
+          gap: 14,
+          flexWrap: 'wrap',
+        }}
+      >
+        <span className="kicker">Thème</span>
+        <span
+          className="font-serif italic"
+          style={{ fontSize: 24, color: 'var(--color-accent)', fontWeight: 500 }}
+        >
           {question.theme}
-        </div>
+        </span>
       </div>
 
-      <div className="h-px w-full bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-
-      <p className="text-2xl leading-relaxed text-white font-semibold">{question.question}</p>
+      <p
+        className="font-serif"
+        style={{
+          margin: '22px 0 0',
+          fontSize: 32,
+          lineHeight: 1.25,
+          color: 'var(--color-ink)',
+          letterSpacing: '-0.01em',
+        }}
+      >
+        {question.question}
+      </p>
 
       {question.options && question.options.length > 0 && (
-        <ul className="flex flex-col gap-2">
+        <ul
+          style={{
+            marginTop: 20,
+            listStyle: 'none',
+            padding: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 6,
+          }}
+        >
           {question.options.map((opt, i) => (
             <li
               key={i}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-white backdrop-blur-sm"
+              style={{
+                padding: '10px 14px',
+                border: '1px solid var(--color-rule)',
+                background: 'var(--color-paper)',
+                color: 'var(--color-ink)',
+              }}
             >
-              {opt}
+              <span
+                className="font-mono"
+                style={{
+                  fontSize: 11,
+                  letterSpacing: '0.18em',
+                  color: 'var(--color-ink-3)',
+                  marginRight: 10,
+                }}
+              >
+                {String.fromCharCode(65 + i)}
+              </span>
+              <span
+                className="font-serif"
+                style={{ fontSize: 18 }}
+              >
+                {opt}
+              </span>
             </li>
           ))}
         </ul>
       )}
 
-      {showAnswer && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1 }}
-          className="rounded-2xl border-2 border-[var(--color-primary)]/60 bg-gradient-to-br from-[var(--color-primary)]/20 to-[var(--color-primary)]/5 p-5"
-          style={{ boxShadow: '0 0 30px rgba(255,215,0,0.25)' }}
+      <hr className="rule" style={{ margin: '28px 0 18px' }} />
+
+      {showAnswer ? (
+        <div
+          className="fade-up"
+          style={{
+            padding: 22,
+            background: 'var(--color-accent-soft)',
+            border: '1.5px solid var(--color-accent)',
+          }}
         >
-          <div className="text-[10px] tracking-[0.3em] font-bold mb-2 uppercase text-[var(--color-primary)]">
-            → Réponse
-          </div>
-          <p className="text-2xl font-bold text-white">{question.reponse}</p>
+          <div className="kicker kicker-accent">→ Réponse officielle</div>
+          <p
+            className="font-serif"
+            style={{
+              margin: '6px 0 0',
+              fontSize: 28,
+              lineHeight: 1.3,
+              fontWeight: 500,
+            }}
+          >
+            {question.reponse}
+          </p>
           {question.explication && (
-            <p className="text-sm text-white/70 mt-3 italic">{question.explication}</p>
+            <p
+              className="font-serif italic"
+              style={{
+                marginTop: 10,
+                fontSize: 16,
+                color: 'var(--color-ink-2)',
+                lineHeight: 1.5,
+              }}
+            >
+              {question.explication}
+            </p>
           )}
-        </motion.div>
+        </div>
+      ) : (
+        <div
+          className="font-mono"
+          style={{
+            display: 'flex',
+            gap: 10,
+            alignItems: 'center',
+            color: 'var(--color-ink-4)',
+            fontSize: 10,
+            letterSpacing: '0.16em',
+            textTransform: 'uppercase',
+          }}
+        >
+          <span>Réponse masquée</span>
+          <div style={{ flex: 1, height: 1, background: 'var(--color-rule)' }} />
+          <span>DERNIÈRE ÉPREUVE</span>
+        </div>
       )}
     </motion.div>
   );

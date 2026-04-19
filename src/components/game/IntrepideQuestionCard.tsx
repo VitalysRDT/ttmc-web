@@ -23,74 +23,168 @@ export function IntrepideQuestionCard({ question, showAnswer }: Props) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="glass-card-strong relative flex flex-col gap-6 rounded-3xl border-2 border-[var(--color-ttmc-intrepide)]/40 p-8 w-full max-w-xl"
-      style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(239,83,80,0.2)' }}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className="paper-card p-8 w-full max-w-xl"
+      style={{ borderColor: 'var(--color-cat-intrepide)' }}
     >
-      <div className="flex items-center justify-between">
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: 12,
+          flexWrap: 'wrap',
+          gap: 8,
+        }}
+      >
         <CategoryBadge category="intrepide" />
-        <div className="text-[10px] tracking-[0.3em] text-[var(--color-ttmc-intrepide)] uppercase font-bold">
+        <span
+          className="font-mono"
+          style={{
+            fontSize: 11,
+            letterSpacing: '0.22em',
+            color: 'var(--color-cat-intrepide)',
+            textTransform: 'uppercase',
+            fontWeight: 700,
+          }}
+        >
           {badgeLabel}
-        </div>
+        </span>
       </div>
+      <hr className="rule-thick" />
 
-      <div>
-        <div className="text-[10px] tracking-[0.3em] text-white/40 uppercase mb-2">Thème</div>
-        <div className="text-sm tracking-[0.1em] font-bold text-[var(--color-ttmc-intrepide)]">
+      <div
+        style={{
+          marginTop: 18,
+          display: 'flex',
+          alignItems: 'baseline',
+          gap: 14,
+          flexWrap: 'wrap',
+        }}
+      >
+        <span className="kicker">Thème</span>
+        <span
+          className="font-serif italic"
+          style={{
+            fontSize: 24,
+            color: 'var(--color-cat-intrepide)',
+            fontWeight: 500,
+          }}
+        >
           {question.theme}
           {question.type && isInstruction && ` — ${question.type}`}
-        </div>
+        </span>
       </div>
 
       {question.instruction && (
         <p
-          className={`whitespace-pre-line leading-relaxed ${
-            isInstruction ? 'text-base text-white' : 'text-white/80 italic'
-          }`}
+          className="font-serif"
+          style={{
+            margin: '22px 0 0',
+            fontSize: isInstruction ? 26 : 20,
+            lineHeight: 1.3,
+            color: 'var(--color-ink)',
+            whiteSpace: 'pre-line',
+            fontStyle: isInstruction ? 'normal' : 'italic',
+          }}
         >
           {question.instruction}
         </p>
       )}
 
       {isInstruction && question.consequence && showAnswer && (
-        <div className="rounded-2xl border border-[var(--color-ttmc-intrepide)]/30 bg-[var(--color-ttmc-intrepide)]/5 p-5">
-          <div className="text-[10px] tracking-[0.3em] font-bold mb-2 uppercase text-[var(--color-ttmc-intrepide)]">
+        <div
+          style={{
+            marginTop: 22,
+            padding: 20,
+            border: '1px solid var(--color-cat-intrepide)',
+            background: 'var(--color-paper)',
+          }}
+        >
+          <div
+            className="kicker"
+            style={{ color: 'var(--color-cat-intrepide)' }}
+          >
             → {sectionLabel}
           </div>
-          <p className="whitespace-pre-line text-sm text-white/85 italic leading-relaxed">
+          <p
+            className="font-serif italic"
+            style={{
+              marginTop: 6,
+              fontSize: 18,
+              lineHeight: 1.5,
+              color: 'var(--color-ink-2)',
+              whiteSpace: 'pre-line',
+            }}
+          >
             {question.consequence}
           </p>
         </div>
       )}
 
       {!isInstruction && question.subQuestions.length > 0 && (
-        <ul className="flex flex-col gap-3">
+        <ul
+          style={{
+            marginTop: 22,
+            listStyle: 'none',
+            padding: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 8,
+          }}
+        >
           {question.subQuestions.map((sub, i) => (
             <li
               key={i}
-              className="rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm"
+              style={{
+                padding: '12px 14px',
+                border: '1px solid var(--color-rule)',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 14,
+              }}
             >
-              <div className="flex items-start gap-3">
-                <span
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full font-black text-white"
-                  style={{
-                    background: 'linear-gradient(145deg, #ef5350, #c62828)',
-                    boxShadow:
-                      '0 4px 12px rgba(239,83,80,0.4), inset 0 1px 0 rgba(255,255,255,0.3)',
-                  }}
-                >
-                  {sub.letter}
-                </span>
-                <div className="flex-1">
-                  {sub.question && <p className="text-white">{sub.question}</p>}
-                  {showAnswer && (
-                    <p className="mt-2 text-sm font-semibold text-[var(--color-primary)]">
-                      → {sub.answer}
-                    </p>
-                  )}
-                </div>
+              <span
+                className="font-serif"
+                style={{
+                  fontSize: 22,
+                  fontWeight: 500,
+                  color: 'var(--color-cat-intrepide)',
+                  minWidth: 26,
+                  textAlign: 'center',
+                }}
+              >
+                {sub.letter}
+              </span>
+              <div style={{ flex: 1 }}>
+                {sub.question && (
+                  <p
+                    className="font-serif"
+                    style={{
+                      margin: 0,
+                      fontSize: 17,
+                      lineHeight: 1.4,
+                      color: 'var(--color-ink)',
+                    }}
+                  >
+                    {sub.question}
+                  </p>
+                )}
+                {showAnswer && (
+                  <p
+                    className="font-serif italic"
+                    style={{
+                      margin: sub.question ? '6px 0 0' : 0,
+                      fontSize: 16,
+                      color: 'var(--color-accent)',
+                      fontWeight: 500,
+                    }}
+                  >
+                    → {sub.answer}
+                  </p>
+                )}
               </div>
             </li>
           ))}

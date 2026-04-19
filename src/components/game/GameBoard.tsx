@@ -1,7 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Star } from 'lucide-react';
 import { SQUARE_CATEGORIES, CATEGORY_COLORS } from '@/lib/game/board-positions';
 import type { Player } from '@/lib/schemas/player.schema';
 
@@ -11,129 +10,349 @@ interface Props {
   currentPlayerId: string;
 }
 
-const PLAYER_COLORS = ['#FFD700', '#FF6B6B', '#4ECDC4', '#C7F464', '#B39BC8', '#F5A25D'];
-const COLS = 10;
-const SNAKE_CASES = 50; // 0-49 en grille, case 50 = ligne d'arrivée dédiée
+const PAWN_COLORS = [
+  'var(--color-ink)',
+  'var(--color-accent)',
+  'var(--color-cat-scolaire)',
+  'var(--color-cat-mature)',
+  'var(--color-cat-improbable)',
+  'var(--color-cat-final)',
+];
 
-/**
- * Calcule la position grille d'une case dans un serpentin zigzag :
- * - ligne paire : gauche → droite (LTR)
- * - ligne impaire : droite → gauche (RTL)
- * Le flux passe de manière continue : ..., 9 (row 0 col 9), 10 (row 1 col 9), ...
- */
+const COLS = 10;
+const ROWS = 5;
+const TOTAL = 50;
+const W = 800;
+const H = 400;
+
 function snakeCell(index: number): { row: number; col: number } {
   const row = Math.floor(index / COLS);
   const col = row % 2 === 0 ? index % COLS : COLS - 1 - (index % COLS);
   return { row, col };
 }
 
-function getPlayerColor(players: Player[], player: Player): string {
+function pawnColor(players: Player[], player: Player): string {
   const idx = players.findIndex((p) => p.id === player.id);
-  return PLAYER_COLORS[idx % PLAYER_COLORS.length]!;
+  return PAWN_COLORS[idx % PAWN_COLORS.length]!;
 }
 
 export function GameBoard({ players, playerPositions, currentPlayerId }: Props) {
-  const cells = Array.from({ length: SNAKE_CASES }, (_, i) => {
+  const cellW = W / COLS;
+  const cellH = H / ROWS;
+
+  const cells = Array.from({ length: TOTAL }, (_, i) => {
     const { row, col } = snakeCell(i);
-    const category = SQUARE_CATEGORIES[i]!;
-    const color = CATEGORY_COLORS[category];
-    const playersHere = players.filter((p) => (playerPositions[p.id] ?? 0) === i);
-    return { index: i, row, col, color, playersHere };
+    const cat = SQUARE_CATEGORIES[i]!;
+    return { i, row, col, cat };
   });
 
+  const pathD = cells
+    .map((c, idx) => {
+      const x = c.col * cellW + cellW / 2;
+      const y = c.row * cellH + cellH / 2;
+      return `${idx === 0 ? 'M' : 'L'} ${x} ${y}`;
+    })
+    .join(' ');
+
+  const currentPos = playerPositions[currentPlayerId] ?? 0;
   const playersOnFinish = players.filter((p) => (playerPositions[p.id] ?? 0) >= 50);
 
   return (
-    <div className="w-full max-w-md rounded-3xl border border-white/10 bg-[var(--color-surface)] p-4 flex flex-col gap-4">
-      {/* Snake grid 10×5 */}
+    <div className="paper-card p-7 w-full">
       <div
-        className="grid gap-1.5"
         style={{
-          gridTemplateColumns: `repeat(${COLS}, minmax(0, 1fr))`,
+          display: 'flex',
+          alignItems: 'baseline',
+          justifyContent: 'space-between',
+          marginBottom: 16,
+          flexWrap: 'wrap',
+          gap: 12,
         }}
       >
-        {cells.map((cell) => {
-          const isCurrentCase = cell.playersHere.some((p) => p.id === currentPlayerId);
+        <div>
+          <div className="kicker">Plateau · 50 cases</div>
+          <div
+            className="font-serif italic"
+            style={{ fontSize: 28, fontWeight: 500 }}
+          >
+            Le parcours
+          </div>
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            gap: 14,
+            alignItems: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
+          {(['improbable', 'plaisir', 'scolaire', 'mature', 'intrepide'] as const).map(
+            (c) => (
+              <div
+                key={c}
+                style={{ display: 'flex', alignItems: 'center', gap: 6 }}
+              >
+                <span
+                  style={{
+                    width: 8,
+                    height: 8,
+                    background: CATEGORY_COLORS[c],
+                    borderRadius: 2,
+                  }}
+                />
+                <span
+                  className="font-mono"
+                  style={{
+                    fontSize: 10,
+                    letterSpacing: '0.12em',
+                    color: 'var(--color-ink-3)',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {c}
+                </span>
+              </div>
+            ),
+          )}
+        </div>
+      </div>
+
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          aspectRatio: `${W} / ${H}`,
+        }}
+      >
+        <svg
+          viewBox={`0 0 ${W} ${H}`}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          {Array.from({ length: ROWS - 1 }, (_, i) => (
+            <line
+              key={'h' + i}
+              x1="0"
+              y1={(i + 1) * cellH}
+              x2={W}
+              y2={(i + 1) * cellH}
+              stroke="var(--color-rule)"
+              strokeWidth="1"
+              strokeDasharray="2 4"
+            />
+          ))}
+          {Array.from({ length: COLS - 1 }, (_, i) => (
+            <line
+              key={'v' + i}
+              x1={(i + 1) * cellW}
+              y1="0"
+              x2={(i + 1) * cellW}
+              y2={H}
+              stroke="var(--color-rule)"
+              strokeWidth="1"
+              strokeDasharray="2 4"
+            />
+          ))}
+          <path
+            d={pathD}
+            fill="none"
+            stroke="var(--color-ink)"
+            strokeWidth="1.5"
+            strokeDasharray="3 3"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            opacity="0.6"
+          />
+        </svg>
+
+        {cells.map((c) => {
+          const x = c.col * cellW + cellW / 2;
+          const y = c.row * cellH + cellH / 2;
+          const here = players.filter((p) => (playerPositions[p.id] ?? 0) === c.i);
+          const isHighlight = c.i === currentPos;
           return (
             <div
-              key={cell.index}
+              key={c.i}
               style={{
-                gridRow: cell.row + 1,
-                gridColumn: cell.col + 1,
-                backgroundColor: `${cell.color}35`,
-                borderColor: cell.color,
+                position: 'absolute',
+                left: `${(x / W) * 100}%`,
+                top: `${(y / H) * 100}%`,
+                transform: 'translate(-50%, -50%)',
+                width: `${((cellW * 0.78) / W) * 100}%`,
+                aspectRatio: '1 / 1',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: isHighlight
+                  ? 'var(--color-ink)'
+                  : 'var(--color-paper)',
+                color: isHighlight
+                  ? 'var(--color-paper)'
+                  : 'var(--color-ink)',
+                border: `1.5px solid ${
+                  isHighlight ? 'var(--color-accent)' : 'var(--color-ink)'
+                }`,
+                borderRadius: '50%',
+                boxShadow: isHighlight
+                  ? '0 0 0 4px var(--color-accent-soft)'
+                  : 'none',
               }}
-              className={`relative aspect-square flex items-center justify-center rounded-full border text-[10px] font-bold text-white/70 ${
-                isCurrentCase ? 'ring-2 ring-white shadow-lg shadow-white/20' : ''
-              }`}
             >
-              <span className="pointer-events-none">{cell.index}</span>
-              {cell.playersHere.length > 0 && (
-                <div className="absolute inset-0 pointer-events-none">
-                  {cell.playersHere.map((p, idx) => {
-                    const pawnColor = getPlayerColor(players, p);
-                    const offsetCount = cell.playersHere.length;
-                    const offset = (idx - (offsetCount - 1) / 2) * 5;
-                    return (
-                      <motion.div
-                        key={p.id}
-                        layoutId={`pawn-${p.id}`}
-                        transition={{ type: 'spring', damping: 18, stiffness: 220 }}
-                        className="absolute inset-0 m-auto size-3.5 rounded-full border-2 border-white shadow-md"
-                        style={{
-                          backgroundColor: pawnColor,
-                          transform: `translate(${offset}px, ${offset}px)`,
-                          zIndex: 10 + idx,
-                        }}
-                      />
-                    );
-                  })}
+              <span
+                className="font-serif"
+                style={{
+                  fontSize: 14,
+                  fontWeight: 500,
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                {c.i}
+              </span>
+              <span
+                style={{
+                  position: 'absolute',
+                  bottom: 4,
+                  width: 8,
+                  height: 2,
+                  background: CATEGORY_COLORS[c.cat],
+                  borderRadius: 1,
+                  opacity: 0.8,
+                }}
+              />
+              {here.length > 0 && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: -8,
+                    right: -8,
+                    display: 'flex',
+                  }}
+                >
+                  {here.map((p, idx) => (
+                    <motion.div
+                      key={p.id}
+                      layoutId={`pawn-${p.id}`}
+                      transition={{ type: 'spring', damping: 18, stiffness: 220 }}
+                      style={{
+                        width: 12,
+                        height: 12,
+                        borderRadius: '50%',
+                        background: pawnColor(players, p),
+                        border: '2px solid var(--color-paper)',
+                        boxShadow: '0 0 0 1.5px var(--color-ink)',
+                        marginLeft: idx === 0 ? 0 : -4,
+                        zIndex: 10 + idx,
+                      }}
+                    />
+                  ))}
                 </div>
               )}
             </div>
           );
         })}
-      </div>
 
-      {/* Ligne d'arrivée (case 50) */}
-      <div className="flex justify-center">
-        <div className="relative flex items-center gap-3 rounded-full border-2 border-[var(--color-primary)] bg-gradient-to-r from-[var(--color-primary)]/25 via-[var(--color-primary)]/10 to-[var(--color-primary)]/25 px-5 py-2">
-          <Star size={16} className="text-[var(--color-primary)] fill-[var(--color-primary)]" />
-          <span className="text-xs font-black tracking-[0.15em] text-[var(--color-primary)]">
-            50 — ARRIVÉE
-          </span>
-          <Star size={16} className="text-[var(--color-primary)] fill-[var(--color-primary)]" />
-          {playersOnFinish.map((p, idx) => {
-            const color = getPlayerColor(players, p);
-            return (
-              <motion.div
-                key={p.id}
-                layoutId={`pawn-${p.id}`}
-                transition={{ type: 'spring', damping: 18, stiffness: 220 }}
-                className="absolute top-1/2 size-4 rounded-full border-2 border-white shadow-lg"
-                style={{
-                  backgroundColor: color,
-                  right: `${-16 - idx * 14}px`,
-                  transform: 'translateY(-50%)',
-                  zIndex: 20 + idx,
-                }}
-              />
-            );
-          })}
+        {/* Arrivée (50) marker */}
+        <div
+          className="font-mono"
+          style={{
+            position: 'absolute',
+            right: 0,
+            bottom: 0,
+            transform: 'translate(24%, 36%)',
+            background: 'var(--color-accent)',
+            color: 'var(--color-paper)',
+            padding: '8px 14px',
+            fontSize: 11,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            border: '1px solid var(--color-ink)',
+            boxShadow: '3px 3px 0 var(--color-ink)',
+            borderRadius: 2,
+          }}
+        >
+          50 · Arrivée
+          {playersOnFinish.length > 0 && (
+            <span style={{ marginLeft: 8 }}>
+              ·{' '}
+              {playersOnFinish.map((p) => (
+                <motion.span
+                  key={p.id}
+                  layoutId={`pawn-${p.id}`}
+                  style={{
+                    display: 'inline-block',
+                    width: 10,
+                    height: 10,
+                    borderRadius: '50%',
+                    background: pawnColor(players, p),
+                    border: '1.5px solid var(--color-paper)',
+                    marginLeft: 4,
+                    verticalAlign: 'middle',
+                  }}
+                />
+              ))}
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Légende des couleurs par catégorie */}
-      <div className="flex flex-wrap justify-center gap-2 pt-1 text-[9px] tracking-[0.1em] text-white/50">
-        {(['improbable', 'plaisir', 'scolaire', 'mature', 'intrepide'] as const).map((cat) => (
-          <div key={cat} className="flex items-center gap-1">
-            <span
-              className="size-2 rounded-full"
-              style={{ backgroundColor: CATEGORY_COLORS[cat] }}
-            />
-            <span className="uppercase">{cat}</span>
-          </div>
-        ))}
+      {/* Scoreboard pill row */}
+      <div
+        style={{
+          marginTop: 20,
+          display: 'flex',
+          gap: 10,
+          flexWrap: 'wrap',
+        }}
+      >
+        {players.map((p) => {
+          const pos = playerPositions[p.id] ?? 0;
+          const isCurrent = p.id === currentPlayerId;
+          return (
+            <div
+              key={p.id}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                padding: '6px 12px',
+                border: `1px solid ${
+                  isCurrent ? 'var(--color-accent)' : 'var(--color-rule)'
+                }`,
+                background: isCurrent
+                  ? 'var(--color-accent-soft)'
+                  : 'transparent',
+                borderRadius: 999,
+              }}
+            >
+              <span
+                style={{
+                  width: 10,
+                  height: 10,
+                  background: pawnColor(players, p),
+                  borderRadius: '50%',
+                  border: '1.5px solid var(--color-ink)',
+                }}
+              />
+              <span className="font-serif italic" style={{ fontSize: 15 }}>
+                {p.pseudo}
+              </span>
+              <span
+                className="font-mono"
+                style={{
+                  fontSize: 11,
+                  color: 'var(--color-ink-3)',
+                  letterSpacing: '0.1em',
+                }}
+              >
+                {String(pos).padStart(2, '0')}/50
+              </span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

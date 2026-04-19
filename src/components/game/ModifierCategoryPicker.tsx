@@ -13,17 +13,34 @@ interface Props {
   currentPlayerName: string;
 }
 
-const CATEGORY_LABEL: Record<Exclude<QuestionCategory, 'debuter' | 'intrepide' | 'final' | 'bonus' | 'malus' | 'challenge'>, { title: string; subtitle: string; color: string }> = {
-  improbable: { title: 'Improbable', subtitle: 'Culture et anecdotes rocambolesques', color: '#7c4dff' },
-  mature: { title: 'Mature', subtitle: 'Thèmes adultes et sans filtre', color: '#ef5350' },
-  plaisir: { title: 'Plaisir', subtitle: 'Sport, loisirs, pop culture', color: '#26c6da' },
-  scolaire: { title: 'Scolaire', subtitle: 'Histoire, sciences, géographie', color: '#66bb6a' },
+type PickableCategory = 'improbable' | 'mature' | 'plaisir' | 'scolaire';
+
+const CATEGORY_META: Record<
+  PickableCategory,
+  { title: string; subtitle: string; tone: string }
+> = {
+  improbable: {
+    title: 'Improbable',
+    subtitle: 'Culture et anecdotes rocambolesques',
+    tone: 'var(--color-cat-improbable)',
+  },
+  mature: {
+    title: 'Mature',
+    subtitle: 'Thèmes adultes et sans filtre',
+    tone: 'var(--color-cat-mature)',
+  },
+  plaisir: {
+    title: 'Plaisir',
+    subtitle: 'Sport, loisirs, pop culture',
+    tone: 'var(--color-cat-plaisir)',
+  },
+  scolaire: {
+    title: 'Scolaire',
+    subtitle: 'Histoire, sciences, géographie',
+    tone: 'var(--color-cat-scolaire)',
+  },
 };
 
-/**
- * Picker de catégorie pour les cartes Intrépide modifier (NIB, AMBITION).
- * NIB propose les 4 catégories standard ; AMBITION uniquement Mature / Improbable.
- */
 export function ModifierCategoryPicker({
   roomId,
   pending,
@@ -33,7 +50,7 @@ export function ModifierCategoryPicker({
   const actions = useGameActions();
   const [submitting, setSubmitting] = useState<QuestionCategory | null>(null);
 
-  const options: QuestionCategory[] =
+  const options: PickableCategory[] =
     pending.kind === 'ambition'
       ? ['mature', 'improbable']
       : ['improbable', 'mature', 'plaisir', 'scolaire'];
@@ -51,61 +68,141 @@ export function ModifierCategoryPicker({
 
   const ruleLabel =
     pending.kind === 'ambition'
-      ? 'Difficulté imposée : 4 à 10'
-      : 'Difficulté imposée : 1/10';
+      ? 'Difficulté imposée · 4 à 10'
+      : 'Difficulté imposée · 1/10';
   const title =
     pending.kind === 'ambition'
-      ? 'CHOISIS UN THÈME IMPOSÉ'
-      : 'CHOISIS LIBREMENT TON THÈME';
+      ? 'Choisis un thème imposé'
+      : 'Choisis librement ton thème';
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      className="flex flex-col items-center gap-5 p-6 w-full max-w-xl"
+      transition={{ duration: 0.35 }}
+      className="paper-card w-full max-w-xl p-8"
+      style={{ borderColor: 'var(--color-cat-intrepide)' }}
     >
-      <div className="text-center">
-        <div className="text-[10px] tracking-[0.3em] text-[var(--color-ttmc-intrepide)] uppercase font-bold mb-1">
-          {pending.kind === 'ambition' ? '📜 AMBITION' : '📜 NIB'}
-        </div>
-        <h2 className="text-2xl font-black text-white">{title}</h2>
-        <p className="mt-1 text-xs tracking-[0.2em] text-white/60 uppercase">{ruleLabel}</p>
+      <div
+        className="font-mono"
+        style={{
+          fontSize: 11,
+          letterSpacing: '0.22em',
+          color: 'var(--color-cat-intrepide)',
+          textTransform: 'uppercase',
+          fontWeight: 700,
+        }}
+      >
+        {pending.kind === 'ambition' ? '📜 AMBITION' : '📜 NIB'}
       </div>
+      <h2
+        className="font-serif italic"
+        style={{
+          margin: '6px 0 0',
+          fontSize: 44,
+          fontWeight: 500,
+          lineHeight: 1,
+          letterSpacing: '-0.02em',
+        }}
+      >
+        {title}.
+      </h2>
+      <p
+        className="font-mono"
+        style={{
+          marginTop: 8,
+          fontSize: 11,
+          letterSpacing: '0.18em',
+          color: 'var(--color-ink-3)',
+          textTransform: 'uppercase',
+        }}
+      >
+        {ruleLabel}
+      </p>
+
+      <hr className="rule" style={{ margin: '22px 0' }} />
 
       {isCurrentPlayer ? (
-        <div className="grid grid-cols-1 gap-3 w-full sm:grid-cols-2">
+        <div
+          style={{
+            display: 'grid',
+            gap: 10,
+            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          }}
+        >
           {options.map((cat) => {
-            const meta = CATEGORY_LABEL[cat as keyof typeof CATEGORY_LABEL];
-            if (!meta) return null;
+            const meta = CATEGORY_META[cat];
             const isLoading = submitting === cat;
             return (
               <motion.button
                 key={cat}
-                whileTap={{ scale: 0.97 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => handleSelect(cat)}
                 disabled={submitting !== null}
-                className="group flex flex-col gap-1 rounded-2xl border-2 bg-white/5 p-5 text-left transition-all hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-50"
-                style={{ borderColor: `${meta.color}55` }}
+                style={{
+                  padding: 18,
+                  textAlign: 'left',
+                  background: 'var(--color-paper)',
+                  border: `1.5px solid ${meta.tone}`,
+                  borderRadius: 2,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 6,
+                  opacity: submitting !== null && !isLoading ? 0.4 : 1,
+                }}
               >
-                <div className="flex items-center justify-between">
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'baseline',
+                  }}
+                >
                   <span
-                    className="text-xs tracking-[0.25em] font-black uppercase"
-                    style={{ color: meta.color }}
+                    className="font-serif italic"
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 500,
+                      color: meta.tone,
+                    }}
                   >
                     {meta.title}
                   </span>
-                  <span className="text-[10px] tracking-[0.2em] text-white/40 uppercase">
-                    {isLoading ? '...' : '→ Tirer'}
+                  <span
+                    className="font-mono"
+                    style={{
+                      fontSize: 10,
+                      letterSpacing: '0.18em',
+                      color: 'var(--color-ink-3)',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {isLoading ? '…' : '→ Tirer'}
                   </span>
                 </div>
-                <p className="text-sm text-white/70 leading-snug">{meta.subtitle}</p>
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: 13,
+                    color: 'var(--color-ink-2)',
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {meta.subtitle}
+                </p>
               </motion.button>
             );
           })}
         </div>
       ) : (
-        <p className="text-sm text-white/50 italic">
+        <p
+          className="font-serif italic"
+          style={{
+            fontSize: 18,
+            color: 'var(--color-ink-3)',
+          }}
+        >
           {currentPlayerName} choisit son thème…
         </p>
       )}

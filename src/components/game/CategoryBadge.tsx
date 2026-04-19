@@ -10,44 +10,49 @@ interface Props {
   size?: 'sm' | 'md' | 'lg';
 }
 
-const CATEGORY_EMOJIS: Record<QuestionCategory, string> = {
-  debuter: '🎬',
-  improbable: '🌀',
-  plaisir: '🎉',
-  mature: '🍷',
-  scolaire: '📚',
-  intrepide: '🔥',
-  final: '⭐',
-  bonus: '🎁',
-  malus: '💀',
-  challenge: '⚡',
+const CATEGORY_NUMS: Record<QuestionCategory, string> = {
+  debuter: '00',
+  improbable: '01',
+  plaisir: '02',
+  scolaire: '03',
+  mature: '04',
+  intrepide: '05',
+  final: '06',
+  bonus: '07',
+  malus: '08',
+  challenge: '09',
 };
 
-const sizeClasses = {
-  sm: 'text-[10px] px-3 py-1 gap-1.5',
-  md: 'text-xs px-4 py-1.5 gap-2',
-  lg: 'text-sm px-5 py-2 gap-2.5',
+const sizeClasses: Record<NonNullable<Props['size']>, string> = {
+  sm: 'text-[10px] gap-2',
+  md: 'text-[11px] gap-2.5',
+  lg: 'text-[13px] gap-3',
+};
+
+const dotSize: Record<NonNullable<Props['size']>, string> = {
+  sm: 'size-2',
+  md: 'size-2.5',
+  lg: 'size-3',
 };
 
 export function CategoryBadge({ category, className, size = 'md' }: Props) {
   const color = CATEGORY_COLORS[category];
   const label = CATEGORY_LABELS[category];
-  const emoji = CATEGORY_EMOJIS[category];
+  const num = CATEGORY_NUMS[category];
   return (
     <div
       className={cn(
-        'inline-flex items-center rounded-full font-bold tracking-[0.2em] uppercase backdrop-blur-md',
+        'font-mono inline-flex items-center uppercase tracking-[0.18em] font-medium',
         sizeClasses[size],
         className,
       )}
-      style={{
-        backgroundColor: `${color}22`,
-        color,
-        border: `1px solid ${color}66`,
-        boxShadow: `0 0 20px ${color}22, inset 0 1px 0 rgba(255,255,255,0.08)`,
-      }}
+      style={{ color: 'var(--color-ink)' }}
     >
-      <span className="text-base">{emoji}</span>
+      <span
+        className={cn('inline-block rounded-sm', dotSize[size])}
+        style={{ background: color }}
+      />
+      <span style={{ color: 'var(--color-ink-3)' }}>N°{num}</span>
       <span>{label}</span>
     </div>
   );

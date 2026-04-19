@@ -1,83 +1,180 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Clock, Crown } from 'lucide-react';
 import type { Player } from '@/lib/schemas/player.schema';
 
 interface Props {
   players: Player[];
   hostId: string;
   maxPlayers: number;
+  onToggleReady?: (playerId: string) => void;
+  currentPlayerId?: string;
 }
 
-const PLAYER_COLORS = ['#FFD700', '#FF6B6B', '#4ECDC4', '#C7F464', '#B39BC8', '#F5A25D'];
+const PAWN_COLORS = [
+  'var(--color-ink)',
+  'var(--color-accent)',
+  'var(--color-cat-scolaire)',
+  'var(--color-cat-mature)',
+  'var(--color-cat-improbable)',
+  'var(--color-cat-final)',
+];
 
-export function PlayerList({ players, hostId, maxPlayers }: Props) {
+export function PlayerList({
+  players,
+  hostId,
+  maxPlayers,
+  onToggleReady,
+  currentPlayerId,
+}: Props) {
+  const readyCount = players.filter((p) => p.isReady).length;
+  const emptyCount = Math.max(0, maxPlayers - players.length);
+
   return (
-    <div className="flex flex-col gap-3 w-full">
-      <div className="flex items-center justify-between text-[10px] tracking-[0.3em] text-white/50 uppercase">
-        <span>Joueurs</span>
-        <span>
-          {players.length}/{maxPlayers}
-        </span>
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: 14,
+        }}
+      >
+        <div className="kicker">
+          Joueurs · {players.length}/{maxPlayers}
+        </div>
+        <div
+          className="font-mono"
+          style={{
+            fontSize: 11,
+            color: 'var(--color-ink-3)',
+            letterSpacing: '0.14em',
+          }}
+        >
+          {readyCount}/{players.length} PRÊTS
+        </div>
       </div>
-      <AnimatePresence>
-        {players.map((player, idx) => {
-          const color = PLAYER_COLORS[idx % PLAYER_COLORS.length]!;
+      <hr className="rule-thick" />
+
+      <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+        {players.map((p, i) => {
+          const pawn = PAWN_COLORS[i % PAWN_COLORS.length];
+          const isSelf = p.id === currentPlayerId;
           return (
-            <motion.div
-              key={player.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-              className="glass-card flex items-center gap-4 rounded-2xl px-5 py-4"
-              style={
-                player.isReady
-                  ? {
-                      boxShadow: `0 0 20px ${color}33, inset 0 1px 0 rgba(255,255,255,0.08)`,
-                      borderColor: `${color}55`,
-                    }
-                  : undefined
-              }
+            <li
+              key={p.id}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '18px 4px',
+                borderBottom: '1px solid var(--color-rule)',
+              }}
             >
-              <div
-                className="size-12 rounded-full flex items-center justify-center text-lg font-black text-white border-2 border-white/30"
-                style={{
-                  background: `radial-gradient(circle at 30% 30%, ${color}, ${color}99)`,
-                  boxShadow: `0 4px 12px ${color}55`,
-                }}
-              >
-                {player.pseudo.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-white truncate">{player.pseudo}</span>
-                  {player.id === hostId && (
-                    <Crown size={14} className="text-[var(--color-primary)] shrink-0" />
-                  )}
-                </div>
-                <div className="text-[10px] tracking-[0.2em] uppercase text-white/40 mt-0.5">
-                  {player.isReady ? 'Prêt à jouer' : 'En attente…'}
-                </div>
-              </div>
-              <div
-                className={`flex size-10 items-center justify-center rounded-full border ${
-                  player.isReady
-                    ? 'border-emerald-400/50 bg-emerald-500/20 text-emerald-400'
-                    : 'border-white/10 bg-white/5 text-white/40'
-                }`}
-              >
-                {player.isReady ? (
-                  <Check size={18} strokeWidth={3} />
-                ) : (
-                  <Clock size={16} />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <span
+                  className="font-mono"
+                  style={{
+                    fontSize: 11,
+                    color: 'var(--color-ink-4)',
+                    width: 24,
+                    letterSpacing: '0.1em',
+                  }}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span
+                  style={{
+                    width: 14,
+                    height: 14,
+                    background: pawn,
+                    borderRadius: '50%',
+                    border: '1.5px solid var(--color-ink)',
+                  }}
+                />
+                <span
+                  className="font-serif italic"
+                  style={{ fontSize: 24, fontWeight: 500 }}
+                >
+                  {p.pseudo}
+                </span>
+                {p.id === hostId && (
+                  <span
+                    className="font-mono"
+                    style={{
+                      fontSize: 9,
+                      letterSpacing: '0.16em',
+                      border: '1px solid var(--color-ink)',
+                      padding: '2px 6px',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    Hôte
+                  </span>
                 )}
               </div>
-            </motion.div>
+              <button
+                onClick={() => onToggleReady && isSelf && onToggleReady(p.id)}
+                disabled={!isSelf}
+                className="font-mono"
+                style={{
+                  fontSize: 10,
+                  letterSpacing: '0.16em',
+                  padding: '6px 10px',
+                  background: p.isReady
+                    ? 'var(--color-ink)'
+                    : 'var(--color-paper)',
+                  color: p.isReady
+                    ? 'var(--color-paper)'
+                    : 'var(--color-ink-3)',
+                  border: `1px solid ${
+                    p.isReady ? 'var(--color-ink)' : 'var(--color-rule)'
+                  }`,
+                  borderRadius: 999,
+                  cursor: isSelf ? 'pointer' : 'default',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {p.isReady ? '✓ Prêt·e' : 'En attente'}
+              </button>
+            </li>
           );
         })}
-      </AnimatePresence>
+
+        {Array.from({ length: emptyCount }, (_, i) => (
+          <li
+            key={'empty' + i}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 16,
+              padding: '18px 4px',
+              borderBottom: '1px solid var(--color-rule)',
+              color: 'var(--color-ink-4)',
+            }}
+          >
+            <span
+              className="font-mono"
+              style={{ fontSize: 11, width: 24, letterSpacing: '0.1em' }}
+            >
+              {String(players.length + i + 1).padStart(2, '0')}
+            </span>
+            <span
+              style={{
+                width: 14,
+                height: 14,
+                border: '1.5px dashed var(--color-ink-4)',
+                borderRadius: '50%',
+              }}
+            />
+            <span
+              className="font-serif italic"
+              style={{ fontSize: 22, fontWeight: 400 }}
+            >
+              place libre…
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

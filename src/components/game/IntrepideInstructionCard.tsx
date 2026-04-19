@@ -14,18 +14,6 @@ interface Props {
   currentPlayerName: string;
 }
 
-/**
- * Carte Intrépide non-quiz (variants `modifier` et `action`).
- *
- * Ces cartes n'ont pas de sous-questions à valider lettre par lettre.
- * - `modifier` : impose une règle pour le tour (NIB, AMBITION). Le joueur
- *   applique la règle manuellement (honor system).
- * - `action` : demande une réorganisation physique entre joueurs (AVERELL).
- *
- * UX : affiche l'instruction + la conséquence (`consequence`) puis un seul
- * bouton « VALIDER » qui envoie `subItemAnswers: {}` au serveur — `spaces = 0`,
- * pas de mouvement de pion, le tour passe au joueur suivant.
- */
 export function IntrepideInstructionCard({
   question,
   roomId,
@@ -52,62 +40,151 @@ export function IntrepideInstructionCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-      className="glass-card-strong relative flex flex-col gap-6 rounded-3xl border-2 border-[var(--color-ttmc-intrepide)]/40 p-6 w-full max-w-xl"
-      style={{ boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(239,83,80,0.2)' }}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.35 }}
+      className="paper-card w-full max-w-xl p-8"
+      style={{ borderColor: 'var(--color-cat-intrepide)' }}
     >
-      <div className="flex items-center justify-between">
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
+          marginBottom: 12,
+          flexWrap: 'wrap',
+          gap: 8,
+        }}
+      >
         <CategoryBadge category="intrepide" />
-        <div className="text-[10px] tracking-[0.3em] text-[var(--color-ttmc-intrepide)] uppercase font-bold">
+        <span
+          className="font-mono"
+          style={{
+            fontSize: 11,
+            letterSpacing: '0.22em',
+            color: 'var(--color-cat-intrepide)',
+            textTransform: 'uppercase',
+            fontWeight: 700,
+          }}
+        >
           {badgeLabel}
-        </div>
+        </span>
       </div>
+      <hr className="rule-thick" />
 
-      <div>
-        <div className="text-[10px] tracking-[0.3em] text-white/40 uppercase mb-2">Thème</div>
-        <div className="text-sm tracking-[0.1em] font-bold text-[var(--color-ttmc-intrepide)]">
+      <div
+        style={{
+          marginTop: 18,
+          display: 'flex',
+          alignItems: 'baseline',
+          gap: 14,
+          flexWrap: 'wrap',
+        }}
+      >
+        <span className="kicker">Thème</span>
+        <span
+          className="font-serif italic"
+          style={{
+            fontSize: 22,
+            color: 'var(--color-cat-intrepide)',
+            fontWeight: 500,
+          }}
+        >
           {question.theme}
           {question.type && ` — ${question.type}`}
-        </div>
+        </span>
       </div>
 
       {question.instruction && (
-        <p className="whitespace-pre-line text-base leading-relaxed text-white">
+        <p
+          className="font-serif"
+          style={{
+            margin: '22px 0 0',
+            fontSize: 22,
+            lineHeight: 1.35,
+            color: 'var(--color-ink)',
+            whiteSpace: 'pre-line',
+          }}
+        >
           {question.instruction}
         </p>
       )}
 
       {question.consequence && (
-        <div className="rounded-2xl border border-[var(--color-ttmc-intrepide)]/30 bg-[var(--color-ttmc-intrepide)]/5 p-5">
-          <div className="text-[10px] tracking-[0.3em] font-bold mb-2 uppercase text-[var(--color-ttmc-intrepide)]">
+        <div
+          style={{
+            marginTop: 22,
+            padding: 20,
+            border: '1px solid var(--color-cat-intrepide)',
+            background: 'var(--color-paper)',
+          }}
+        >
+          <div
+            className="kicker"
+            style={{ color: 'var(--color-cat-intrepide)' }}
+          >
             → {sectionLabel}
           </div>
-          <p className="whitespace-pre-line text-sm text-white/85 italic leading-relaxed">
+          <p
+            className="font-serif italic"
+            style={{
+              marginTop: 6,
+              fontSize: 17,
+              lineHeight: 1.5,
+              color: 'var(--color-ink-2)',
+              whiteSpace: 'pre-line',
+            }}
+          >
             {question.consequence}
           </p>
         </div>
       )}
 
       {isCurrentPlayer ? (
-        <div className="flex flex-col items-center gap-2">
+        <div
+          style={{
+            marginTop: 26,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
           <Button
+            variant="accent"
             size="lg"
             onClick={handleValidate}
             disabled={submitting}
             loading={submitting}
           >
-            {question.variant === 'modifier' ? 'APPLIQUER LA RÈGLE →' : 'VALIDER — TOUR SUIVANT'}
+            {question.variant === 'modifier'
+              ? 'APPLIQUER LA RÈGLE →'
+              : 'VALIDER — TOUR SUIVANT'}
           </Button>
-          <p className="text-[10px] tracking-[0.2em] text-white/40 uppercase">
+          <p
+            className="font-mono"
+            style={{
+              fontSize: 10,
+              letterSpacing: '0.18em',
+              color: 'var(--color-ink-4)',
+              textTransform: 'uppercase',
+            }}
+          >
             {question.variant === 'action'
-              ? 'Appliquez l\'action ensemble'
+              ? "Appliquez l'action ensemble"
               : 'La règle sera appliquée immédiatement'}
           </p>
         </div>
       ) : (
-        <p className="text-center text-sm text-white/50 italic">
+        <p
+          className="font-serif italic"
+          style={{
+            marginTop: 22,
+            textAlign: 'center',
+            fontSize: 18,
+            color: 'var(--color-ink-3)',
+          }}
+        >
           {currentPlayerName} applique la carte…
         </p>
       )}

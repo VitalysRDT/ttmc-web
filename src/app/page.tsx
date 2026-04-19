@@ -18,28 +18,38 @@ export default function SplashPage() {
   }, [status, router]);
 
   return (
-    <main className="flex min-h-dvh items-center justify-center">
+    <main className="flex min-h-dvh items-center justify-center px-6">
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
+        initial={{ scale: 0.96, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="flex flex-col items-center gap-6"
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="flex flex-col items-center gap-6 text-center"
       >
-        <motion.div
-          animate={{
-            boxShadow: [
-              '0 0 30px 10px rgba(255,215,0,0.3)',
-              '0 0 60px 20px rgba(255,215,0,0.5)',
-              '0 0 30px 10px rgba(255,215,0,0.3)',
-            ],
+        <div className="kicker">§ 00 · Préambule</div>
+        <h1
+          className="font-serif italic"
+          style={{
+            margin: 0,
+            fontSize: 'clamp(56px, 10vw, 120px)',
+            lineHeight: 0.9,
+            fontWeight: 500,
+            letterSpacing: '-0.03em',
           }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="size-32 rounded-full bg-[var(--color-primary)] flex items-center justify-center border-4 border-white"
         >
-          <span className="text-5xl font-black text-black">T²</span>
-        </motion.div>
-        <h1 className="text-5xl font-black tracking-[0.3em] text-white">TTMC</h1>
-        <p className="text-sm tracking-[0.5em] text-[var(--color-primary)]">LE GRAND QUIZ</p>
+          Tu mises{' '}
+          <span style={{ color: 'var(--color-accent)' }}>combien</span> ?
+        </h1>
+        <p
+          className="font-mono"
+          style={{
+            fontSize: 12,
+            letterSpacing: '0.3em',
+            color: 'var(--color-ink-3)',
+            textTransform: 'uppercase',
+          }}
+        >
+          · Le grand quiz ·
+        </p>
       </motion.div>
     </main>
   );

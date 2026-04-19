@@ -67,7 +67,7 @@ export default function LobbyPage({ params }: Props) {
   if (loading || authStatus === 'loading') {
     return (
       <main className="flex min-h-dvh items-center justify-center">
-        <div className="size-14 animate-spin rounded-full border-4 border-white/10 border-t-[var(--color-primary)]" />
+        <div className="size-10 animate-spin rounded-full border-2 border-[var(--color-rule)] border-t-[var(--color-ink)]" />
       </main>
     );
   }
@@ -75,7 +75,9 @@ export default function LobbyPage({ params }: Props) {
   if (error || !room) {
     return (
       <main className="flex min-h-dvh flex-col items-center justify-center gap-4 p-6">
-        <p className="text-red-400">{error ?? 'Salle introuvable'}</p>
+        <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[oklch(0.55_0.2_25)]">
+          {error ?? 'Salle introuvable'}
+        </p>
         <Button onClick={() => router.push('/home')}>Retour</Button>
       </main>
     );
@@ -114,52 +116,114 @@ export default function LobbyPage({ params }: Props) {
   };
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center p-6">
+    <main className="min-h-dvh px-6 py-12 md:px-20 md:py-16">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-lg flex flex-col items-center gap-10"
+        className="mx-auto max-w-[1100px] grid gap-14 md:grid-cols-[1.2fr_1fr]"
       >
-        <RoomCodeDisplay roomCode={room.roomCode} />
+        <div>
+          <div className="kicker">§ 03 · Salle d&apos;attente</div>
+          <h1
+            className="font-serif italic"
+            style={{
+              fontSize: 'clamp(56px, 8vw, 92px)',
+              lineHeight: 0.9,
+              margin: '12px 0 24px',
+              fontWeight: 500,
+              letterSpacing: '-0.02em',
+            }}
+          >
+            Le salon est{' '}
+            <span style={{ color: 'var(--color-accent)' }}>ouvert</span>.
+          </h1>
+          <p
+            style={{
+              color: 'var(--color-ink-2)',
+              fontSize: 17,
+              lineHeight: 1.55,
+              maxWidth: 520,
+            }}
+          >
+            Partage le code. Quand tout le monde est prêt — carré noir sur le nom —
+            tu démarres. Personne ne peut rejoindre après le premier tour.
+          </p>
 
-        <div className="glass-card-strong w-full rounded-3xl p-6">
+          <div style={{ marginTop: 36 }}>
+            <RoomCodeDisplay roomCode={room.roomCode} />
+          </div>
+
+          <div
+            style={{
+              marginTop: 40,
+              display: 'flex',
+              gap: 12,
+              flexWrap: 'wrap',
+            }}
+          >
+            <Button
+              variant={currentPlayerInRoom?.isReady ? 'secondary' : 'primary'}
+              size="lg"
+              onClick={handleToggleReady}
+            >
+              {currentPlayerInRoom?.isReady ? 'Pas prêt' : 'Je suis prêt·e'}
+            </Button>
+            {isHost && (
+              <Button
+                variant="accent"
+                size="lg"
+                onClick={handleStart}
+                disabled={!canStart}
+                loading={actionLoading}
+              >
+                Lancer la partie →
+              </Button>
+            )}
+            <Button variant="ghost" size="lg" onClick={handleLeave}>
+              Quitter
+            </Button>
+          </div>
+
+          {!canStart && (
+            <p
+              className="font-mono"
+              style={{
+                marginTop: 14,
+                fontSize: 11,
+                color: 'var(--color-ink-3)',
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+              }}
+            >
+              On attend que tout le monde soit prêt.
+            </p>
+          )}
+
+          {actionError && (
+            <p
+              className="font-mono"
+              style={{
+                marginTop: 10,
+                fontSize: 11,
+                letterSpacing: '0.14em',
+                color: 'oklch(0.55 0.2 25)',
+                textTransform: 'uppercase',
+              }}
+            >
+              {actionError}
+            </p>
+          )}
+        </div>
+
+        <div>
           <PlayerList
             players={room.players}
             hostId={room.hostId}
             maxPlayers={room.maxPlayers}
+            currentPlayerId={player?.id}
+            onToggleReady={handleToggleReady}
           />
-        </div>
-
-        {actionError && (
-          <p className="text-red-400 text-xs tracking-wider text-center uppercase">
-            {actionError}
-          </p>
-        )}
-
-        <div className="w-full flex flex-col gap-3">
-          <Button
-            size="lg"
-            variant={currentPlayerInRoom?.isReady ? 'secondary' : 'primary'}
-            onClick={handleToggleReady}
-          >
-            {currentPlayerInRoom?.isReady ? 'Pas prêt' : 'Je suis prêt'}
-          </Button>
-
-          {isHost && (
-            <Button
-              size="lg"
-              onClick={handleStart}
-              disabled={!canStart}
-              loading={actionLoading}
-            >
-              {canStart ? 'Démarrer la partie' : 'En attente des joueurs'}
-            </Button>
-          )}
-
-          <Button size="sm" variant="ghost" onClick={handleLeave}>
-            Quitter
-          </Button>
         </div>
       </motion.div>
     </main>

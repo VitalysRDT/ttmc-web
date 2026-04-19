@@ -119,18 +119,18 @@ export const SQUARE_CATEGORIES: Record<number, QuestionCategory> = {
   50: 'final',
 };
 
-/** Couleurs des catégories (utilisées pour les cases et les badges). */
+/** Couleurs des catégories (tonal marks éditoriaux — oklch). */
 export const CATEGORY_COLORS: Record<QuestionCategory, string> = {
-  mature: '#4FC3F7',
-  improbable: '#9C27B0',
-  plaisir: '#FF9800',
-  scolaire: '#66BB6A',
-  intrepide: '#E53935',
-  final: '#FFD700',
-  debuter: '#FFFFFF',
-  bonus: '#E53935',
-  malus: '#212121',
-  challenge: '#FFEB3B',
+  mature: 'oklch(0.58 0.12 235)',
+  improbable: 'oklch(0.58 0.12 310)',
+  plaisir: 'oklch(0.66 0.12 55)',
+  scolaire: 'oklch(0.58 0.12 155)',
+  intrepide: 'oklch(0.58 0.14 18)',
+  final: 'oklch(0.55 0.14 85)',
+  debuter: 'oklch(0.55 0.02 60)',
+  bonus: 'oklch(0.58 0.14 18)',
+  malus: 'oklch(0.32 0.012 60)',
+  challenge: 'oklch(0.66 0.14 85)',
 };
 
 /** Libellés français des catégories. */
