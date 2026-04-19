@@ -21,7 +21,9 @@ function parseRoom(raw: unknown): GameRoom | null {
   if (!raw) return null;
   try {
     return GameRoomSchema.parse(raw);
-  } catch {
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('[useRoomStream] parse room failed', err);
     return null;
   }
 }

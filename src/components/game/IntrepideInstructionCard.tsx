@@ -23,7 +23,7 @@ export function IntrepideInstructionCard({
   const actions = useGameActions();
   const [submitting, setSubmitting] = useState(false);
 
-  const badgeLabel = question.variant === 'action' ? '⚡ Action' : '📜 Règle';
+  const badgeLabel = question.variant === 'action' ? '· Action ·' : '· Règle ·';
   const sectionLabel =
     question.variant === 'action' ? 'Détails' : 'En cas de mauvaise réponse';
 

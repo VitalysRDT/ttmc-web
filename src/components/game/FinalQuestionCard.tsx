@@ -37,7 +37,7 @@ export function FinalQuestionCard({ question, showAnswer }: Props) {
             fontWeight: 700,
           }}
         >
-          ⋆ Question finale ⋆
+          · Question finale ·
         </span>
       </div>
       <hr className="rule-thick" />

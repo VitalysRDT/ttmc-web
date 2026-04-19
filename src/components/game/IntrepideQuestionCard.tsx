@@ -14,10 +14,10 @@ export function IntrepideQuestionCard({ question, showAnswer }: Props) {
     question.variant === 'modifier' || question.variant === 'action';
   const badgeLabel =
     question.variant === 'action'
-      ? '⚡ Action'
+      ? '· Action ·'
       : question.variant === 'modifier'
-        ? '📜 Règle'
-        : '🔥 Défi';
+        ? '· Règle ·'
+        : '· Défi ·';
   const sectionLabel =
     question.variant === 'action' ? 'Détails' : 'En cas de mauvaise réponse';
 

@@ -64,5 +64,12 @@ export const GameStateSchema = z.object({
    * Reset par `submitAnswer` à la fin du mini-tour.
    */
   pendingModifier: PendingModifierSchema.nullable().default(null),
+  /**
+   * Nombre de skip-card (« carte infaisable ») utilisés sur le tour courant.
+   * Reset à 0 par `nextTurn` et `startTurn`. Limite dure côté serveur pour
+   * empêcher un joueur de boucler indéfiniment afin de tomber sur une carte
+   * qu'il connaît.
+   */
+  currentTurnSkipCount: z.number().int().min(0).default(0),
 });
 export type GameState = z.infer<typeof GameStateSchema>;

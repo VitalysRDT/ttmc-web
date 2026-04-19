@@ -79,7 +79,7 @@ export function IntrepideAnswerCard({
             fontWeight: 700,
           }}
         >
-          🔥 Défi
+          · Défi ·
         </span>
       </div>
       <hr className="rule-thick" />

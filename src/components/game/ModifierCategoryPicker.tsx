@@ -93,7 +93,7 @@ export function ModifierCategoryPicker({
           fontWeight: 700,
         }}
       >
-        {pending.kind === 'ambition' ? '📜 AMBITION' : '📜 NIB'}
+        {pending.kind === 'ambition' ? '· AMBITION ·' : '· NIB ·'}
       </div>
       <h2
         className="font-serif italic"

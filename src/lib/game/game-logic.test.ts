@@ -27,6 +27,7 @@ function makeState(overrides: Partial<GameState> = {}): GameState {
     debuterAnswers: {},
     firstCorrectDebuterId: null,
     pendingModifier: null,
+    currentTurnSkipCount: 0,
     ...overrides,
   };
 }

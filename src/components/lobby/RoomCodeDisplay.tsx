@@ -47,7 +47,7 @@ export function RoomCodeDisplay({ roomCode }: Props) {
       </div>
       <div style={{ width: 1, height: 80, background: 'var(--color-rule)' }} />
       <button className="btn btn-ghost" onClick={handleCopy}>
-        {copied ? '✓ Copié' : '📋 Copier'}
+        {copied ? 'Copié ✓' : 'Copier →'}
       </button>
     </div>
   );

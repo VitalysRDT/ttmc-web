@@ -151,6 +151,7 @@ export async function startGame(roomId: string, hostId: string): Promise<void> {
     debuterAnswers: {},
     firstCorrectDebuterId: null,
     pendingModifier: null,
+    currentTurnSkipCount: 0,
   };
   await updateRoomGameState(roomId, initialState, 'playing');
 }
@@ -570,6 +571,12 @@ export async function skipCurrentCard(roomId: string, playerId: string): Promise
   ) {
     throw new GameError('Changement de carte non autorisé à cette phase', 400);
   }
+  if ((state.currentTurnSkipCount ?? 0) >= 1) {
+    throw new GameError(
+      'Tu as déjà changé de carte ce tour. Joue celle-ci.',
+      400,
+    );
+  }
   const position = state.playerPositions[playerId] ?? 0;
   const category = SQUARE_CATEGORIES[position] ?? 'improbable';
 
@@ -601,6 +608,7 @@ export async function skipCurrentCard(roomId: string, playerId: string): Promise
     phaseStartedAt: new Date(),
     phaseTransitionAt: null,
     usedQuestionIds: [...state.usedQuestionIds, replacement.question.id],
+    currentTurnSkipCount: (state.currentTurnSkipCount ?? 0) + 1,
   };
   await updateRoomGameState(roomId, updated);
 }
@@ -626,6 +634,7 @@ export async function nextTurn(roomId: string, playerId: string): Promise<void> 
       ...state,
       currentRound: state.currentRound + 1,
       pendingModifier: null,
+      currentTurnSkipCount: 0,
     },
     order,
   );
