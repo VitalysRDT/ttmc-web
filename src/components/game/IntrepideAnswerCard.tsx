@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Check, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Check, X, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { CategoryBadge } from './CategoryBadge';
 import { useGameActions } from '@/lib/hooks/useGameActions';
@@ -16,10 +16,12 @@ interface Props {
 }
 
 /**
- * Carte Intrépide en phase `answering` : affiche chaque sous-question (lettre)
- * avec son indice + sa réponse et deux boutons RATÉ/TROUVÉ. Le joueur valide
- * item par item puis envoie le résultat global via « VALIDER ». Le serveur
- * calcule `spaces = correctCount` et fait avancer le pion.
+ * Carte Intrépide en phase `answering`, révélation progressive lettre par lettre.
+ *
+ * UX : seul le sous-item courant expose sa réponse + boutons RATÉ/TROUVÉ.
+ * Les items suivants n'affichent que l'énoncé (réponse masquée). Les items
+ * validés sont figés (vert/rouge). Quand toutes les lettres ont été marquées,
+ * le bouton VALIDER devient actif et envoie la map complète au serveur.
  */
 export function IntrepideAnswerCard({
   question,
@@ -35,6 +37,10 @@ export function IntrepideAnswerCard({
   const answered = Object.keys(answers).length;
   const correct = Object.values(answers).filter(Boolean).length;
   const allAnswered = answered === total;
+  const firstUnansweredIndex = question.subQuestions.findIndex(
+    (sub) => answers[sub.letter] === undefined,
+  );
+  const currentIndex = firstUnansweredIndex === -1 ? total : firstUnansweredIndex;
 
   const handleMark = (letter: string, ok: boolean) => {
     if (!isCurrentPlayer || submitting) return;
@@ -81,73 +87,108 @@ export function IntrepideAnswerCard({
       )}
 
       <ul className="flex flex-col gap-3">
-        {question.subQuestions.map((sub) => {
+        {question.subQuestions.map((sub, index) => {
           const mark = answers[sub.letter];
-          const locked = mark !== undefined;
-          const isCorrect = mark === true;
-          const isWrong = mark === false;
+          const isLocked = mark !== undefined;
+          const isActive = index === currentIndex;
+          const isMasked = index > currentIndex;
+          const isCorrectMark = mark === true;
+          const isWrongMark = mark === false;
+
+          const borderClass = isCorrectMark
+            ? 'border-emerald-500/50 bg-emerald-500/10'
+            : isWrongMark
+              ? 'border-red-500/50 bg-red-500/10'
+              : isActive
+                ? 'border-[var(--color-ttmc-intrepide)]/60 bg-[var(--color-ttmc-intrepide)]/10'
+                : 'border-white/10 bg-white/5';
 
           return (
-            <li
+            <motion.li
               key={sub.letter}
-              className={`rounded-xl border p-4 backdrop-blur-sm transition-colors ${
-                isCorrect
-                  ? 'border-emerald-500/50 bg-emerald-500/10'
-                  : isWrong
-                    ? 'border-red-500/50 bg-red-500/10'
-                    : 'border-white/10 bg-white/5'
-              }`}
+              layout
+              animate={{ opacity: isMasked ? 0.55 : 1 }}
+              transition={{ duration: 0.25 }}
+              className={`rounded-xl border p-4 backdrop-blur-sm transition-colors ${borderClass}`}
             >
               <div className="flex items-start gap-3">
                 <span
                   className="flex size-9 shrink-0 items-center justify-center rounded-full font-black text-white"
                   style={{
                     background: 'linear-gradient(145deg, #ef5350, #c62828)',
-                    boxShadow: '0 4px 12px rgba(239,83,80,0.4), inset 0 1px 0 rgba(255,255,255,0.3)',
+                    boxShadow:
+                      '0 4px 12px rgba(239,83,80,0.4), inset 0 1px 0 rgba(255,255,255,0.3)',
                   }}
                 >
                   {sub.letter}
                 </span>
                 <div className="flex-1 min-w-0">
                   <p className="text-white text-sm leading-snug">{sub.question}</p>
-                  <p className="mt-1 text-sm font-semibold text-[var(--color-primary)]">
-                    → {sub.answer}
-                  </p>
+                  <AnimatePresence initial={false}>
+                    {(isLocked || isActive) && (
+                      <motion.p
+                        key="answer"
+                        initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                        animate={{ opacity: 1, height: 'auto', marginTop: 6 }}
+                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                        className="text-sm font-semibold text-[var(--color-primary)] overflow-hidden"
+                      >
+                        → {sub.answer}
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                  {isMasked && (
+                    <div className="mt-2 flex items-center gap-1.5 text-[10px] tracking-[0.2em] text-white/40 uppercase">
+                      <Lock size={10} strokeWidth={2.5} />
+                      Réponse masquée
+                    </div>
+                  )}
                 </div>
               </div>
-              <div className="mt-3 flex gap-2">
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleMark(sub.letter, false)}
-                  disabled={!isCurrentPlayer || locked || submitting}
-                  className={`flex-1 h-11 rounded-xl border-2 font-black text-xs tracking-[0.15em] transition-all disabled:cursor-not-allowed ${
-                    isWrong
-                      ? 'border-red-500 bg-red-500/25 text-red-200'
-                      : 'border-red-500/40 bg-red-500/5 text-red-400 hover:border-red-500 hover:bg-red-500/15 disabled:opacity-40'
+
+              {isActive && (
+                <motion.div
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="mt-3 flex gap-2"
+                >
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleMark(sub.letter, false)}
+                    disabled={!isCurrentPlayer || submitting}
+                    className="flex-1 h-11 rounded-xl border-2 border-red-500/40 bg-red-500/5 font-black text-xs tracking-[0.15em] text-red-400 transition-all hover:border-red-500 hover:bg-red-500/15 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      <X size={16} strokeWidth={3} />
+                      RATÉ
+                    </span>
+                  </motion.button>
+                  <motion.button
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => handleMark(sub.letter, true)}
+                    disabled={!isCurrentPlayer || submitting}
+                    className="flex-1 h-11 rounded-xl border-2 border-emerald-500/40 bg-emerald-500/5 font-black text-xs tracking-[0.15em] text-emerald-400 transition-all hover:border-emerald-500 hover:bg-emerald-500/15 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <span className="flex items-center justify-center gap-2">
+                      <Check size={16} strokeWidth={3} />
+                      TROUVÉ
+                    </span>
+                  </motion.button>
+                </motion.div>
+              )}
+
+              {isLocked && (
+                <div
+                  className={`mt-2 text-[10px] tracking-[0.2em] font-bold uppercase ${
+                    isCorrectMark ? 'text-emerald-300' : 'text-red-300'
                   }`}
                 >
-                  <span className="flex items-center justify-center gap-2">
-                    <X size={16} strokeWidth={3} />
-                    RATÉ
-                  </span>
-                </motion.button>
-                <motion.button
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => handleMark(sub.letter, true)}
-                  disabled={!isCurrentPlayer || locked || submitting}
-                  className={`flex-1 h-11 rounded-xl border-2 font-black text-xs tracking-[0.15em] transition-all disabled:cursor-not-allowed ${
-                    isCorrect
-                      ? 'border-emerald-500 bg-emerald-500/25 text-emerald-200'
-                      : 'border-emerald-500/40 bg-emerald-500/5 text-emerald-400 hover:border-emerald-500 hover:bg-emerald-500/15 disabled:opacity-40'
-                  }`}
-                >
-                  <span className="flex items-center justify-center gap-2">
-                    <Check size={16} strokeWidth={3} />
-                    TROUVÉ
-                  </span>
-                </motion.button>
-              </div>
-            </li>
+                  {isCorrectMark ? '✓ Trouvé' : '✗ Raté'}
+                </div>
+              )}
+            </motion.li>
           );
         })}
       </ul>

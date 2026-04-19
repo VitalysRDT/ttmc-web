@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Eye } from 'lucide-react';
+import { Eye, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { QuestionCard } from './QuestionCard';
 import { DifficultySelector } from './DifficultySelector';
@@ -109,7 +109,7 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="flex flex-col items-center gap-2"
+              className="flex flex-col items-center gap-3"
             >
               <Button
                 size="lg"
@@ -126,6 +126,20 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
               <p className="text-[10px] tracking-[0.2em] text-white/40 uppercase">
                 Lis, réfléchis, puis clique
               </p>
+              {turn.question.kind === 'intrepide' && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    actions.skipCard(room.id).catch((err) =>
+                      alert(err instanceof Error ? err.message : String(err)),
+                    )
+                  }
+                  className="mt-1 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[10px] font-bold tracking-[0.2em] text-white/70 uppercase transition-colors hover:border-[var(--color-ttmc-intrepide)]/60 hover:bg-[var(--color-ttmc-intrepide)]/10 hover:text-white"
+                >
+                  <RefreshCw size={12} strokeWidth={2.5} />
+                  Carte infaisable — changer
+                </button>
+              )}
             </motion.div>
           ) : (
             <p className="text-sm text-white/50 italic">

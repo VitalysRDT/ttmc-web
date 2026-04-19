@@ -11,6 +11,7 @@ import {
   startTurn as startTurnAction,
   nextTurnAction as nextTurnApiAction,
   revealAnswerAction as revealAnswerApiAction,
+  skipCardAction as skipCardApiAction,
   toggleReady as toggleReadyAction,
   startGame as startGameAction,
   leaveRoom as leaveRoomAction,
@@ -67,6 +68,10 @@ export function useGameActions() {
       },
       async nextTurn(roomId: string) {
         const room = await nextTurnApiAction(roomId);
+        applyRoom(roomId, room);
+      },
+      async skipCard(roomId: string) {
+        const room = await skipCardApiAction(roomId);
         applyRoom(roomId, room);
       },
       async revealAnswer(roomId: string) {

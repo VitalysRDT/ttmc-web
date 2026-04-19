@@ -128,6 +128,10 @@ export async function nextTurnAction(roomId: string): Promise<GameRoom | null> {
   return parseRoomResponse(await post(`/api/rooms/${roomId}/turn/next`));
 }
 
+export async function skipCardAction(roomId: string): Promise<GameRoom | null> {
+  return parseRoomResponse(await post(`/api/rooms/${roomId}/turn/skip`));
+}
+
 export async function selectStartingPlayer(
   roomId: string,
   playerId: string,

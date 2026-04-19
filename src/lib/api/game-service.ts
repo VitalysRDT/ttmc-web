@@ -366,6 +366,62 @@ export async function submitAnswer(
   }
 }
 
+/**
+ * Re-tire une nouvelle carte pour le joueur courant pendant `reading_question`.
+ *
+ * Cas d'usage : certaines cartes Intrépide ne sont pas réalisables dans un
+ * contexte donné (référence trop pointue, sous-question impossible à évaluer,
+ * etc.). Le joueur actif peut alors demander un nouveau tirage de la même
+ * catégorie. Fonctionne aussi pour les cartes Final/Debuter. Pour une
+ * Standard, on remet la phase à `selecting_difficulty` puisque la difficulté
+ * n'est pas encore validée.
+ */
+export async function skipCurrentCard(roomId: string, playerId: string): Promise<void> {
+  const room = await loadRoomOrThrow(roomId);
+  const state = room.gameState;
+  if (!state || !state.currentTurn) throw new GameError('Aucun tour en cours');
+  if (state.currentPlayerId !== playerId) throw new GameError('Ce n\'est pas votre tour');
+  if (
+    state.currentPhase !== 'reading_question' &&
+    state.currentPhase !== 'selecting_difficulty'
+  ) {
+    throw new GameError('Changement de carte non autorisé à cette phase', 400);
+  }
+  const position = state.playerPositions[playerId] ?? 0;
+  const category = SQUARE_CATEGORIES[position] ?? 'improbable';
+
+  let replacement = await drawQuestion(playerId, category);
+  // Best-effort : tenter une seconde fois si on retombe sur la même carte.
+  if (replacement.question.id === state.currentTurn.question.id) {
+    replacement = await drawQuestion(playerId, category);
+  }
+
+  const newTurn: GameTurn = {
+    playerId,
+    question: replacement.question,
+    selectedDifficulty: 0,
+    givenAnswer: null,
+    isCorrect: false,
+    timeSpent: 0,
+    startedAt: new Date(),
+    completedAt: null,
+  };
+
+  const nextPhase = replacement.question.kind === 'standard'
+    ? 'selecting_difficulty'
+    : 'reading_question';
+
+  const updated: GameState = {
+    ...state,
+    currentPhase: nextPhase,
+    currentTurn: newTurn,
+    phaseStartedAt: new Date(),
+    phaseTransitionAt: null,
+    usedQuestionIds: [...state.usedQuestionIds, replacement.question.id],
+  };
+  await updateRoomGameState(roomId, updated);
+}
+
 /** Passe au joueur suivant. */
 export async function nextTurn(roomId: string, playerId: string): Promise<void> {
   const room = await loadRoomOrThrow(roomId);
