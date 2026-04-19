@@ -52,18 +52,34 @@ async function loadRoomOrThrow(roomId: string) {
   return room;
 }
 
-/** Tire une question aléatoire pour la catégorie, en tenant compte du cache. */
+/**
+ * Tire une question aléatoire pour la catégorie.
+ *
+ * Exclusions appliquées :
+ * - `usedQuestionIds` (cartes déjà tirées dans la partie courante) : évite
+ *   qu'une même carte Intrépide/Final/Débuter revienne deux fois dans une
+ *   partie. Essentiel pour Intrépide (seulement 8 cartes).
+ * - Cache joueur (pour standard) : évite qu'un joueur retombe sur la même
+ *   question à la même difficulté d'une partie à l'autre.
+ *
+ * Si la pool devient vide après filtrage, fallback sur la liste complète
+ * pour ne pas crasher en fin de paquet.
+ */
 async function drawQuestion(
   playerId: string,
   category: QuestionCategory,
+  usedQuestionIds: readonly string[] = [],
 ): Promise<{ question: Question; difficulty: number }> {
   const allQuestions = await getQuestionsByCategory(category);
   if (allQuestions.length === 0) {
     throw new GameError(`Aucune question disponible pour ${category}`, 500);
   }
+  const used = new Set(usedQuestionIds);
 
   if (category === 'debuter' || category === 'final' || category === 'intrepide') {
-    const pick = allQuestions[Math.floor(Math.random() * allQuestions.length)]!;
+    const unused = allQuestions.filter((q) => !used.has(q.id));
+    const pool = unused.length > 0 ? unused : allQuestions;
+    const pick = pool[Math.floor(Math.random() * pool.length)]!;
     return { question: pick, difficulty: 0 };
   }
 
@@ -71,8 +87,14 @@ async function drawQuestion(
   const standardQuestions = allQuestions.filter(
     (q): q is StandardQuestion => q.kind === 'standard',
   );
-  const available = standardQuestions.filter((q) => !isQuestionExhausted(cache, q.id));
-  const pool = available.length > 0 ? available : standardQuestions;
+  const unusedThisGame = standardQuestions.filter((q) => !used.has(q.id));
+  const available = unusedThisGame.filter((q) => !isQuestionExhausted(cache, q.id));
+  const pool =
+    available.length > 0
+      ? available
+      : unusedThisGame.length > 0
+        ? unusedThisGame
+        : standardQuestions;
   const picked = pool[Math.floor(Math.random() * pool.length)]!;
   const difficulty =
     pickAvailableDifficulty(cache, picked.id) ?? GAME_CONSTANTS.minDifficulty;
@@ -90,7 +112,7 @@ export async function startGame(roomId: string, hostId: string): Promise<void> {
     throw new GameError('Tous les joueurs doivent être prêts', 400);
   }
 
-  const debuterDraw = await drawQuestion(hostId, 'debuter');
+  const debuterDraw = await drawQuestion(hostId, 'debuter', []);
   const debuterQuestion = debuterDraw.question as DebuterQuestion;
 
   const firstPlayerId = room.players[0]!.id;
@@ -206,7 +228,7 @@ export async function selectModifierCategory(
     throw new GameError('Catégorie non autorisée par la règle en cours', 400);
   }
 
-  const { question } = await drawQuestion(playerId, category);
+  const { question } = await drawQuestion(playerId, category, state.usedQuestionIds);
   if (question.kind !== 'standard') {
     throw new GameError('Question tirée non-standard inattendue', 500);
   }
@@ -248,7 +270,7 @@ export async function startTurn(roomId: string, playerId: string): Promise<void>
 
   const position = state.playerPositions[playerId] ?? 0;
   const category = SQUARE_CATEGORIES[position] ?? 'improbable';
-  const { question } = await drawQuestion(playerId, category);
+  const { question } = await drawQuestion(playerId, category, state.usedQuestionIds);
 
   const newTurn: GameTurn = {
     playerId,
@@ -551,11 +573,11 @@ export async function skipCurrentCard(roomId: string, playerId: string): Promise
   const position = state.playerPositions[playerId] ?? 0;
   const category = SQUARE_CATEGORIES[position] ?? 'improbable';
 
-  let replacement = await drawQuestion(playerId, category);
-  // Best-effort : tenter une seconde fois si on retombe sur la même carte.
-  if (replacement.question.id === state.currentTurn.question.id) {
-    replacement = await drawQuestion(playerId, category);
-  }
+  // Exclure la carte actuelle + toutes celles déjà vues dans la partie.
+  const excludedIds = Array.from(
+    new Set([...state.usedQuestionIds, state.currentTurn.question.id]),
+  );
+  const replacement = await drawQuestion(playerId, category, excludedIds);
 
   const newTurn: GameTurn = {
     playerId,
