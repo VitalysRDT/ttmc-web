@@ -57,59 +57,64 @@ export function DifficultySelector({
 
   return (
     <div className="paper-card p-9 w-full max-w-[880px]">
+      {/* Bandeau catégorie */}
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
           alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 12,
+          gap: 10,
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <span
-            style={{
-              width: 12,
-              height: 12,
-              background: `var(--color-cat-${question.category})`,
-              borderRadius: 2,
-            }}
-          />
-          <span
-            className="font-mono"
-            style={{
-              fontSize: 13,
-              letterSpacing: '0.18em',
-              textTransform: 'uppercase',
-            }}
-          >
-            <span
-              style={{ color: 'var(--color-ink-3)', marginRight: 8 }}
-            >
-              N°
-            </span>
-            {categoryLabel}
-          </span>
-        </div>
-        <div className="kicker">Thème · {question.theme}</div>
+        <span
+          style={{
+            width: 12,
+            height: 12,
+            background: `var(--color-cat-${question.category})`,
+            borderRadius: 2,
+          }}
+        />
+        <span
+          className="font-mono"
+          style={{
+            fontSize: 13,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+          }}
+        >
+          <span style={{ color: 'var(--color-ink-3)', marginRight: 8 }}>N°</span>
+          {categoryLabel}
+        </span>
       </div>
 
-      <hr className="rule" style={{ margin: '28px 0 20px' }} />
+      <hr className="rule-thick" style={{ margin: '14px 0 22px' }} />
 
-      <div className="kicker kicker-ink">La question</div>
+      {/* THÈME en hero — c'est ce sur quoi on mise */}
+      <div className="kicker kicker-ink">Sujet de la mise</div>
       <h2
         className="font-serif italic"
         style={{
-          margin: '8px 0 32px',
+          margin: '6px 0 8px',
           fontWeight: 500,
-          fontSize: 'clamp(40px, 6vw, 64px)',
-          lineHeight: 1,
+          fontSize: 'clamp(48px, 7vw, 88px)',
+          lineHeight: 0.95,
           letterSpacing: '-0.02em',
-          color: 'var(--color-ink)',
+          color: `var(--color-cat-${question.category})`,
         }}
       >
-        Tu mises combien&nbsp;?
+        {question.theme}
       </h2>
+      <div
+        className="font-mono"
+        style={{
+          fontSize: 12,
+          letterSpacing: '0.24em',
+          color: 'var(--color-ink-3)',
+          textTransform: 'uppercase',
+          marginBottom: 28,
+        }}
+      >
+        ↘ Tu mises combien sur ce thème&nbsp;?
+      </div>
 
       {hasRestriction && (
         <div
