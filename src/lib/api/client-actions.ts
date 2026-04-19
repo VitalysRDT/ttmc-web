@@ -9,6 +9,7 @@
 
 import type { Player } from '@/lib/schemas/player.schema';
 import { GameRoomSchema, type GameRoom } from '@/lib/schemas/game-room.schema';
+import type { QuestionCategory } from '@/lib/schemas/enums';
 
 async function post(url: string, body?: unknown): Promise<Response> {
   const res = await fetch(url, {
@@ -130,6 +131,15 @@ export async function nextTurnAction(roomId: string): Promise<GameRoom | null> {
 
 export async function skipCardAction(roomId: string): Promise<GameRoom | null> {
   return parseRoomResponse(await post(`/api/rooms/${roomId}/turn/skip`));
+}
+
+export async function selectModifierCategoryAction(
+  roomId: string,
+  category: QuestionCategory,
+): Promise<GameRoom | null> {
+  return parseRoomResponse(
+    await post(`/api/rooms/${roomId}/modifier/category`, { category }),
+  );
 }
 
 export async function selectStartingPlayer(

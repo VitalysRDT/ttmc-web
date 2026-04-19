@@ -128,6 +128,7 @@ export async function startGame(roomId: string, hostId: string): Promise<void> {
     remainingTime: 0,
     debuterAnswers: {},
     firstCorrectDebuterId: null,
+    pendingModifier: null,
   };
   await updateRoomGameState(roomId, initialState, 'playing');
 }
@@ -165,6 +166,74 @@ export async function selectStartingPlayer(
     currentTurn: null,
     phaseStartedAt: new Date(),
     phaseTransitionAt: null,
+  };
+  await updateRoomGameState(roomId, updated);
+}
+
+/**
+ * Phase `modifier_category_select` : le joueur actif choisit la catégorie
+ * imposée par la carte Intrépide modifier. NIB autorise les 4 catégories
+ * standard ; AMBITION impose mature/improbable.
+ *
+ * Tire une question standard dans la catégorie choisie puis :
+ *  - NIB     : pré-sélectionne difficulté 1, passe en reading_question.
+ *  - AMBITION : passe en selecting_difficulty avec bornes 4-10.
+ */
+export async function selectModifierCategory(
+  roomId: string,
+  playerId: string,
+  category: QuestionCategory,
+): Promise<void> {
+  const room = await loadRoomOrThrow(roomId);
+  const state = room.gameState;
+  if (!state) throw new GameError('État manquant');
+  if (state.currentPlayerId !== playerId) throw new GameError('Ce n\'est pas votre tour');
+  if (state.currentPhase !== 'modifier_category_select') {
+    throw new GameError('Phase incorrecte');
+  }
+  const pending = state.pendingModifier;
+  if (!pending) throw new GameError('Aucun modifier en cours');
+
+  const allowedForNib: QuestionCategory[] = [
+    'improbable',
+    'mature',
+    'plaisir',
+    'scolaire',
+  ];
+  const allowedForAmbition: QuestionCategory[] = ['mature', 'improbable'];
+  const allowed = pending.kind === 'nib' ? allowedForNib : allowedForAmbition;
+  if (!allowed.includes(category)) {
+    throw new GameError('Catégorie non autorisée par la règle en cours', 400);
+  }
+
+  const { question } = await drawQuestion(playerId, category);
+  if (question.kind !== 'standard') {
+    throw new GameError('Question tirée non-standard inattendue', 500);
+  }
+
+  const selectedDifficulty = pending.kind === 'nib' ? 1 : 0;
+  const newTurn: GameTurn = {
+    playerId,
+    question,
+    selectedDifficulty,
+    givenAnswer: null,
+    isCorrect: false,
+    timeSpent: 0,
+    startedAt: new Date(),
+    completedAt: null,
+  };
+
+  const updated: GameState = {
+    ...state,
+    currentTurn: newTurn,
+    currentPhase: pending.kind === 'nib' ? 'reading_question' : 'selecting_difficulty',
+    phaseStartedAt: new Date(),
+    phaseTransitionAt: null,
+    usedQuestionIds: [...state.usedQuestionIds, question.id],
+    pendingModifier: {
+      ...pending,
+      category,
+    },
   };
   await updateRoomGameState(roomId, updated);
 }
@@ -223,6 +292,17 @@ export async function selectDifficulty(
   if (!available.includes(difficulty)) {
     throw new GameError('Difficulté non disponible');
   }
+  // Si un modifier Intrépide est actif (AMBITION), la difficulté doit
+  // respecter ses bornes. Enforcement serveur contre les clients malveillants.
+  if (state.pendingModifier) {
+    const { minDifficulty, maxDifficulty } = state.pendingModifier;
+    if (difficulty < minDifficulty || difficulty > maxDifficulty) {
+      throw new GameError(
+        `Difficulté hors bornes (${minDifficulty}-${maxDifficulty}) imposée par la carte.`,
+        400,
+      );
+    }
+  }
   const updatedTurn: GameTurn = {
     ...state.currentTurn,
     selectedDifficulty: difficulty,
@@ -259,6 +339,19 @@ export async function revealAnswer(roomId: string, playerId: string): Promise<vo
   await updateRoomGameState(roomId, updated);
 }
 
+/**
+ * Retourne le kind de modifier (`nib` | `ambition`) d'après la carte Intrépide
+ * courante, ou null si ce n'est pas une carte modifier connue.
+ */
+function detectModifierKind(turn: GameTurn): 'nib' | 'ambition' | null {
+  if (turn.question.kind !== 'intrepide') return null;
+  if (turn.question.variant !== 'modifier') return null;
+  const t = turn.question.type.toLowerCase();
+  if (t === 'nib') return 'nib';
+  if (t === 'ambition') return 'ambition';
+  return null;
+}
+
 /** Soumet une réponse OUI/NON (système d'honneur). */
 export async function submitAnswer(
   roomId: string,
@@ -276,6 +369,39 @@ export async function submitAnswer(
     throw new GameError('Phase incorrecte');
   }
   const turn = state.currentTurn;
+
+  // Détection d'une carte Intrépide modifier (NIB / AMBITION) qui déclenche
+  // un mini-tour contraint au lieu du flow standard.
+  const modifierKind = detectModifierKind(turn);
+  if (modifierKind && state.pendingModifier === null) {
+    // Le joueur valide la carte modifier → on ouvre le picker de catégorie.
+    const pending: NonNullable<GameState['pendingModifier']> =
+      modifierKind === 'nib'
+        ? { kind: 'nib', category: null, minDifficulty: 1, maxDifficulty: 1 }
+        : { kind: 'ambition', category: null, minDifficulty: 4, maxDifficulty: 10 };
+
+    const appliedTurn: GameTurn = {
+      ...turn,
+      givenAnswer: 'Règle appliquée',
+      isCorrect: true,
+      completedAt: new Date(),
+      timeSpent: turn.startedAt
+        ? Math.max(0, Math.round((Date.now() - turn.startedAt.getTime()) / 1000))
+        : 0,
+    };
+
+    const updatedModifier: GameState = {
+      ...state,
+      currentTurn: null,
+      currentPhase: 'modifier_category_select',
+      phaseStartedAt: new Date(),
+      phaseTransitionAt: null,
+      pendingModifier: pending,
+      turnHistory: [...state.turnHistory, appliedTurn],
+    };
+    await updateRoomGameState(roomId, updatedModifier);
+    return;
+  }
 
   // Calcul du scoring selon le type de carte
   let spaces: number;
@@ -318,7 +444,45 @@ export async function submitAnswer(
     currentPhase: 'revealing_answer',
   };
 
-  if (isCorrect && spaces > 0) {
+  // Scoring spécial : question tirée via un modifier (NIB / AMBITION).
+  // - AMBITION raté : recule de `selectedDifficulty` cases.
+  // - NIB raté     : le joueur perd la partie → winnerId attribué au joueur
+  //                 le plus avancé restant (ordre initial à égalité).
+  // Bonne réponse : comportement standard (+N cases). Le modifier est vidé
+  // dans tous les cas à la fin du mini-tour.
+  const pending = state.pendingModifier;
+  if (pending) {
+    if (!isCorrect && turn.question.kind === 'standard') {
+      if (pending.kind === 'ambition') {
+        updated = movePlayer(updated, playerId, -turn.selectedDifficulty);
+      } else {
+        // NIB : « tu perds la partie »
+        const candidates = room.players.filter((p) => p.id !== playerId);
+        const byPos = [...candidates].sort((a, b) => {
+          const pa = updated.playerPositions[a.id] ?? 0;
+          const pb = updated.playerPositions[b.id] ?? 0;
+          if (pa !== pb) return pb - pa;
+          return room.players.indexOf(a) - room.players.indexOf(b);
+        });
+        const fallbackWinner = byPos[0]?.id ?? null;
+        if (fallbackWinner) {
+          updated = { ...updated, winnerId: fallbackWinner, isFinalQuestion: true };
+        }
+      }
+    } else if (isCorrect && spaces > 0) {
+      updated = movePlayer(updated, playerId, spaces);
+      if (hasPlayerReachedEnd(updated, playerId)) {
+        if (!updated.isFinalQuestion) {
+          updated = { ...updated, isFinalQuestion: true };
+        } else {
+          updated = { ...updated, winnerId: playerId };
+        }
+      }
+    }
+    // pendingModifier reste set durant revealing_answer pour que l'UI
+    // affiche « -N CASES (recul) » ou « 💀 » selon le kind. Il sera nettoyé
+    // par `nextTurn`.
+  } else if (isCorrect && spaces > 0) {
     updated = movePlayer(updated, playerId, spaces);
     if (hasPlayerReachedEnd(updated, playerId)) {
       if (!updated.isFinalQuestion) {
@@ -439,7 +603,11 @@ export async function nextTurn(roomId: string, playerId: string): Promise<void> 
   }
   const order = room.players.map((p) => p.id);
   const updated: GameState = nextPlayer(
-    { ...state, currentRound: state.currentRound + 1 },
+    {
+      ...state,
+      currentRound: state.currentRound + 1,
+      pendingModifier: null,
+    },
     order,
   );
   await updateRoomGameState(roomId, updated);

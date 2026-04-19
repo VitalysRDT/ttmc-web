@@ -10,6 +10,10 @@ interface Props {
   question: StandardQuestion;
   onConfirm: (difficulty: number) => void;
   disabled?: boolean;
+  /** Difficulté minimale autorisée (ex. 4 imposé par la carte AMBITION). */
+  minDifficulty?: number;
+  /** Difficulté maximale autorisée (ex. 10). */
+  maxDifficulty?: number;
 }
 
 const DIFFICULTIES = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
@@ -24,22 +28,39 @@ function difficultyColor(d: number): string {
   return '#ef5350'; // rouge
 }
 
-export function DifficultySelector({ question, onConfirm, disabled }: Props) {
+export function DifficultySelector({
+  question,
+  onConfirm,
+  disabled,
+  minDifficulty = 1,
+  maxDifficulty = 10,
+}: Props) {
   const [selected, setSelected] = useState<number | null>(null);
 
   const available = new Set(
     Object.keys(question.questions)
       .map((k) => Number(k))
       .filter(
-        (d) => !Number.isNaN(d) && question.questions[String(d)] && question.answers[String(d)],
+        (d) =>
+          !Number.isNaN(d) &&
+          question.questions[String(d)] &&
+          question.answers[String(d)] &&
+          d >= minDifficulty &&
+          d <= maxDifficulty,
       ),
   );
+  const hasRestriction = minDifficulty > 1 || maxDifficulty < 10;
 
   return (
     <div className="flex flex-col items-center gap-6 w-full max-w-md">
       <div className="text-center text-xs tracking-[0.3em] text-white/60 uppercase">
         Choisis ta difficulté
       </div>
+      {hasRestriction && (
+        <div className="-mt-2 rounded-full border border-[var(--color-ttmc-intrepide)]/40 bg-[var(--color-ttmc-intrepide)]/10 px-4 py-2 text-[10px] tracking-[0.2em] text-[var(--color-ttmc-intrepide)] uppercase font-bold">
+          Règle imposée : {minDifficulty}-{maxDifficulty}
+        </div>
+      )}
 
       <div className="grid grid-cols-5 gap-3 w-full">
         {DIFFICULTIES.map((d) => {

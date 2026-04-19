@@ -98,12 +98,12 @@ export function IntrepideInstructionCard({
             disabled={submitting}
             loading={submitting}
           >
-            VALIDER — TOUR SUIVANT
+            {question.variant === 'modifier' ? 'APPLIQUER LA RÈGLE →' : 'VALIDER — TOUR SUIVANT'}
           </Button>
           <p className="text-[10px] tracking-[0.2em] text-white/40 uppercase">
             {question.variant === 'action'
               ? 'Appliquez l\'action ensemble'
-              : 'Appliquez la règle sur votre tour'}
+              : 'La règle sera appliquée immédiatement'}
           </p>
         </div>
       ) : (

@@ -12,6 +12,7 @@ import {
   nextTurnAction as nextTurnApiAction,
   revealAnswerAction as revealAnswerApiAction,
   skipCardAction as skipCardApiAction,
+  selectModifierCategoryAction as selectModifierCategoryApiAction,
   toggleReady as toggleReadyAction,
   startGame as startGameAction,
   leaveRoom as leaveRoomAction,
@@ -72,6 +73,13 @@ export function useGameActions() {
       },
       async skipCard(roomId: string) {
         const room = await skipCardApiAction(roomId);
+        applyRoom(roomId, room);
+      },
+      async selectModifierCategory(
+        roomId: string,
+        category: import('@/lib/schemas/enums').QuestionCategory,
+      ) {
+        const room = await selectModifierCategoryApiAction(roomId, category);
         applyRoom(roomId, room);
       },
       async revealAnswer(roomId: string) {

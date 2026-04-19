@@ -10,6 +10,7 @@ import { HonorButtons } from './HonorButtons';
 import { CategoryBadge } from './CategoryBadge';
 import { IntrepideAnswerCard } from './IntrepideAnswerCard';
 import { IntrepideInstructionCard } from './IntrepideInstructionCard';
+import { ModifierCategoryPicker } from './ModifierCategoryPicker';
 import { useGameActions } from '@/lib/hooks/useGameActions';
 import { SQUARE_CATEGORIES } from '@/lib/game/board-positions';
 import type { GameRoom } from '@/lib/schemas/game-room.schema';
@@ -82,6 +83,8 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
           <DifficultySelector
             question={turn.question}
             disabled={!isCurrentPlayer}
+            minDifficulty={state.pendingModifier?.minDifficulty ?? 1}
+            maxDifficulty={state.pendingModifier?.maxDifficulty ?? 10}
             onConfirm={(d) =>
               actions.selectDifficulty(room.id, d).catch((err) =>
                 alert(err instanceof Error ? err.message : String(err)),
@@ -94,6 +97,17 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
             </p>
           )}
         </div>
+      );
+
+    case 'modifier_category_select':
+      if (!state.pendingModifier) return null;
+      return (
+        <ModifierCategoryPicker
+          roomId={room.id}
+          pending={state.pendingModifier}
+          isCurrentPlayer={isCurrentPlayer}
+          currentPlayerName={currentPlayerName}
+        />
       );
 
     case 'reading_question':
@@ -214,16 +228,28 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
           : null;
       const advanced =
         intrepideCorrect ?? (turn.question.kind === 'standard' ? turn.selectedDifficulty : 0);
-      const headlineLabel = isIntrepideInstruction
-        ? '✓ CARTE APPLIQUÉE'
-        : advanced > 0
-          ? `✓ +${advanced} CASE${advanced > 1 ? 'S' : ''}`
-          : '✗ DOMMAGE';
-      const headlineColor = isIntrepideInstruction
-        ? 'text-[var(--color-ttmc-intrepide)]'
-        : advanced > 0
-          ? 'text-green-400'
-          : 'text-red-400';
+      const pendingMod = state.pendingModifier;
+      const isModifierMiniTurn = pendingMod !== null && turn.question.kind === 'standard';
+      let headlineLabel: string;
+      let headlineColor: string;
+      if (isIntrepideInstruction) {
+        headlineLabel = '✓ CARTE APPLIQUÉE';
+        headlineColor = 'text-[var(--color-ttmc-intrepide)]';
+      } else if (isModifierMiniTurn && !turn.isCorrect) {
+        if (pendingMod!.kind === 'nib') {
+          headlineLabel = '💀 TU PERDS LA PARTIE';
+          headlineColor = 'text-red-500';
+        } else {
+          headlineLabel = `✗ −${turn.selectedDifficulty} CASE${turn.selectedDifficulty > 1 ? 'S' : ''} (recul)`;
+          headlineColor = 'text-red-400';
+        }
+      } else if (advanced > 0) {
+        headlineLabel = `✓ +${advanced} CASE${advanced > 1 ? 'S' : ''}`;
+        headlineColor = 'text-green-400';
+      } else {
+        headlineLabel = '✗ DOMMAGE';
+        headlineColor = 'text-red-400';
+      }
       return (
         <div className="flex flex-col items-center gap-6 p-6">
           <motion.div

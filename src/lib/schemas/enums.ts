@@ -24,6 +24,14 @@ export const TurnPhaseEnum = z.enum([
   'answering',
   'revealing_answer',
   'turn_complete',
+  /**
+   * Carte Intrépide modifier (NIB, AMBITION) : après avoir validé la carte,
+   * le joueur actif choisit une catégorie standard contrainte. Le serveur
+   * tire alors une question standard avec les contraintes de difficulté du
+   * modifier, puis reprend le flow normal (selecting_difficulty ou
+   * reading_question selon le cas).
+   */
+  'modifier_category_select',
 ]);
 export type TurnPhase = z.infer<typeof TurnPhaseEnum>;
 
