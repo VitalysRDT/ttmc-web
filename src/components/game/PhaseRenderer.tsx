@@ -318,12 +318,16 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
         turn.question.kind === 'intrepide' &&
         (turn.question.variant === 'modifier' ||
           turn.question.variant === 'action');
-      const intrepideCorrect =
-        turn.question.kind === 'intrepide' && turn.subItemAnswers
-          ? Object.values(turn.subItemAnswers).filter(Boolean).length
-          : null;
+      // Pour Intrépide quiz : spaces = correct − faux (peut être négatif)
+      let intrepideNet: number | null = null;
+      if (turn.question.kind === 'intrepide' && turn.subItemAnswers) {
+        const values = Object.values(turn.subItemAnswers);
+        const correct = values.filter(Boolean).length;
+        const wrong = values.length - correct;
+        intrepideNet = correct - wrong;
+      }
       const advanced =
-        intrepideCorrect ??
+        intrepideNet ??
         (turn.question.kind === 'standard' ? turn.selectedDifficulty : 0);
       const pendingMod = state.pendingModifier;
       const isModifierMiniTurn =
@@ -366,6 +370,13 @@ export function PhaseRenderer({ room, currentPlayer }: Props) {
           advanced > 1 ? 's' : ''
         } sur le plateau. Au joueur suivant.`;
         verdictColor = 'var(--color-ink)';
+      } else if (advanced < 0) {
+        const recul = Math.abs(advanced);
+        verdictWord = 'Dommage.';
+        verdictSub = `Plus de mauvaises que de bonnes : ${currentPlayerName} recule de ${recul} case${
+          recul > 1 ? 's' : ''
+        }.`;
+        verdictColor = 'var(--color-accent)';
       } else {
         verdictWord = 'Dommage.';
         verdictSub = `${currentPlayerName} reste sur place. Le pion ne bouge pas.`;

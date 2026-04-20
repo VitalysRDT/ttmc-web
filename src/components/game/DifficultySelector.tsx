@@ -100,9 +100,9 @@ export function DifficultySelector({
         style={{
           margin: '0 0 10px',
           fontWeight: 500,
-          fontSize: 'clamp(72px, 11vw, 160px)',
-          lineHeight: 0.92,
-          letterSpacing: '-0.03em',
+          fontSize: 'clamp(40px, 6vw, 72px)',
+          lineHeight: 1,
+          letterSpacing: '-0.02em',
           color: `var(--color-cat-${question.category})`,
           wordBreak: 'break-word',
           hyphens: 'auto',

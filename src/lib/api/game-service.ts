@@ -438,9 +438,18 @@ export async function submitAnswer(
     }
     subItemAnswers = payload.subItemAnswers;
     const total = Object.keys(subItemAnswers).length;
-    spaces = Object.values(subItemAnswers).filter(Boolean).length;
-    isCorrect = spaces > 0;
-    givenAnswer = `${spaces}/${total}`;
+    const values = Object.values(subItemAnswers);
+    const correctCount = values.filter(Boolean).length;
+    const wrongCount = total - correctCount;
+    // Scoring Intrépide quiz : net = bonnes − mauvaises. Plusieurs cartes
+    // spécifient « +1 par bonne / −1 par mauvaise » (ex. 73 BIENVENUE
+    // MESSAGERIE) ; on applique ça uniformément. movePlayer clampe à 0 donc
+    // un joueur à la case 0 ne peut pas descendre plus bas mais les autres
+    // reculent bien du solde négatif. Les variants modifier/action n'ont pas
+    // de sous-items (total = 0) → spaces = 0 conservé.
+    spaces = correctCount - wrongCount;
+    isCorrect = correctCount > 0;
+    givenAnswer = `${correctCount}/${total}`;
   } else {
     if (!('isCorrect' in payload)) {
       throw new GameError('Réponse isCorrect manquante', 400);
