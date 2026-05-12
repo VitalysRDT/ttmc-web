@@ -17,16 +17,16 @@
     "import-questions:upload": "tsx scripts/import-questions.ts --upload"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.2",
     "@tanstack/react-query": "^5.96.2",
-    "@upstash/redis": "^1.37.0",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
     "framer-motion": "^12.38.0",
+    "ioredis": "^5.10.1",
     "jose": "^6.2.2",
     "lucide-react": "^1.7.0",
     "nanoid": "^5.1.7",
     "next": "16.2.2",
+    "pg": "^8.20.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "tailwind-merge": "^3.5.0",
@@ -36,6 +36,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
+    "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/ui": "^4.1.3",
